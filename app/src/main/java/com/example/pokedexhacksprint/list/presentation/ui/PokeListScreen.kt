@@ -2,12 +2,14 @@ package com.example.pokedexhacksprint.list.presentation.ui
 
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -42,43 +44,64 @@ fun PokeListScreen(
     viewModel: PokeListViewModel
     //onClick: (PokemonDto) -> Unit,
 ) {
-
     val uiPokemons by viewModel.uiPokemons.collectAsState()
 
-    Column(modifier = Modifier.padding(16.dp)) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color(0xFFe74343))
+    ) {
+        val pokemonFontSolid = FontFamily(
+            Font(R.font.pokemon_solid)
+        )
 
-        val pokemonFont = FontFamily(
+        val pokemonFontHollow = FontFamily(
             Font(R.font.pokemon_hollow)
         )
-        Text(
-            text = "Pokedex",
-            fontFamily = pokemonFont,
-            style = MaterialTheme.typography.headlineMedium.copy(
-                fontWeight = FontWeight.Bold,
-                fontSize = 50.sp,
-                color = Color(0xFF3C4A59)
-            ),
-            modifier = Modifier
-                .padding(16.dp)
-                .align(Alignment.CenterHorizontally)
-        )
+
+        // Camada amarela do texto
+        Box(modifier = Modifier.align(Alignment.CenterHorizontally)) {
+            Text(
+                text = "Pokedex",
+                fontFamily = pokemonFontSolid,
+                style = MaterialTheme.typography.headlineMedium.copy(
+                    fontWeight = FontWeight.ExtraBold,
+                    fontSize = 64.sp,
+                    color = Color(0xFFffe800) // Cor amarela
+                ),
+                modifier = Modifier
+                    .padding(16.dp)
+                    .align(Alignment.Center)
+            )
+
+            // Camada de contorno do texto (cor azul)
+            Text(
+                text = "Pokedex",
+                fontFamily = pokemonFontHollow,
+                style = MaterialTheme.typography.headlineMedium.copy(
+                    fontWeight = FontWeight.Bold ,
+                    fontSize = 64.sp,
+                    color = Color(0xFF2553ff) //contorno
+                ),
+                modifier = Modifier
+                    .padding(16.dp)
+                    .align(Alignment.Center)
+            )
+        }
         PokemonListContent(
             uiPokemons = uiPokemons
         )
-        /* {
-           itemClicked ->
-        navController.navigate(route = "movieDetail/${itemClicked.id}")
-    }*/
     }
 }
+
 @Composable
 private fun PokemonListContent(
     uiPokemons: List<PokemonDto>
 ) {
-
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize()
+            .background(Color(0xFF767676)),
         contentPadding = PaddingValues(8.dp)
     ) {
         items(uiPokemons) { pokemon ->
@@ -94,7 +117,7 @@ private fun PokemonListContent(
 fun PokemonItem(
     pokemonDto: PokemonDto,
     //onClick: (PokemonDto) -> Unit,
-    ) {
+) {
     Card(
         modifier = Modifier
             .padding(8.dp)
@@ -102,7 +125,7 @@ fun PokemonItem(
             .fillMaxWidth(),
         elevation = CardDefaults.cardElevation(4.dp),
         shape = MaterialTheme.shapes.medium
-        ) {
+    ) {
         Column(
             modifier = Modifier
                 .background(Color.DarkGray) // Fundo colorido
@@ -120,7 +143,7 @@ fun PokemonItem(
                 contentDescription = "${pokemonDto.name} Poster image"
             )
             Text(
-                text = pokemonDto.name.capitalize(),
+                text = pokemonDto.name,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.SemiBold,
                 color = Color(0xFF00BCD4)
