@@ -1,9 +1,8 @@
 package com.example.pokedexhacksprint.list.presentation.ui
 
-import android.graphics.fonts.Font
-import android.graphics.fonts.FontFamily
+
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -26,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -45,8 +45,6 @@ fun PokeListScreen(
 
     val uiPokemons by viewModel.uiPokemons.collectAsState()
 
-
-
     Column(modifier = Modifier.padding(16.dp)) {
 
         val pokemonFont = FontFamily(
@@ -64,19 +62,19 @@ fun PokeListScreen(
                 .padding(16.dp)
                 .align(Alignment.CenterHorizontally)
         )
-    PokemonListContent(
-        uiPokemons = uiPokemons
-    )
-    /* {
+        PokemonListContent(
+            uiPokemons = uiPokemons
+        )
+        /* {
            itemClicked ->
         navController.navigate(route = "movieDetail/${itemClicked.id}")
     }*/
-
+    }
 }
 @Composable
 private fun PokemonListContent(
     uiPokemons: List<PokemonDto>
-){
+) {
 
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
@@ -96,7 +94,7 @@ private fun PokemonListContent(
 fun PokemonItem(
     pokemonDto: PokemonDto,
     //onClick: (PokemonDto) -> Unit,
-) {
+    ) {
     Card(
         modifier = Modifier
             .padding(8.dp)
@@ -104,7 +102,7 @@ fun PokemonItem(
             .fillMaxWidth(),
         elevation = CardDefaults.cardElevation(4.dp),
         shape = MaterialTheme.shapes.medium
-    ) {
+        ) {
         Column(
             modifier = Modifier
                 .background(Color.DarkGray) // Fundo colorido
@@ -130,4 +128,5 @@ fun PokemonItem(
         }
     }
 }
+
 
