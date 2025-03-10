@@ -5,8 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
+import com.example.pokedexapp.PokemonDto
 import com.example.pokedexhacksprint.common.data.RetrofitClient
-import com.example.pokedexhacksprint.common.model.PokeDto
 import com.example.pokedexhacksprint.list.data.ListService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,8 +17,8 @@ class PokeListViewModel (
     private val listService: ListService
 ): ViewModel() {
 
-    private val _UiPokemons = MutableStateFlow<List<PokeDto>>(emptyList())
-    val uiPokemons: StateFlow<List<PokeDto>> = _UiPokemons
+    private val _UiPokemons = MutableStateFlow<List<PokemonDto>>(emptyList())
+    val uiPokemons: StateFlow<List<PokemonDto>> = _UiPokemons
 
     init {
         fetchPokemons()
