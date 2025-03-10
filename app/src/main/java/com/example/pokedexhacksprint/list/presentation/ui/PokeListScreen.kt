@@ -3,13 +3,11 @@ package com.example.pokedexhacksprint.list.presentation.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -45,19 +43,14 @@ fun PokeListScreen(
     //onClick: (PokemonDto) -> Unit,
 ) {
     val uiPokemons by viewModel.uiPokemons.collectAsState()
+    val pokemonFontSolid = FontFamily(Font(R.font.pokemon_solid))
+    val pokemonFontHollow = FontFamily(Font(R.font.pokemon_hollow))
 
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .background(Color(0xFFe74343))
     ) {
-        val pokemonFontSolid = FontFamily(
-            Font(R.font.pokemon_solid)
-        )
-
-        val pokemonFontHollow = FontFamily(
-            Font(R.font.pokemon_hollow)
-        )
 
         // Camada amarela do texto
         Box(modifier = Modifier.align(Alignment.CenterHorizontally)) {
