@@ -10,16 +10,22 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -45,6 +51,18 @@ fun PokeListScreen(
     val uiPokemons by viewModel.uiPokemons.collectAsState()
     val pokemonFontSolid = FontFamily(Font(R.font.pokemon_solid))
     val pokemonFontHollow = FontFamily(Font(R.font.pokemon_hollow))
+    val listState = rememberLazyGridState()
+
+    // Carregar mais pokemons quando scrollar
+    LaunchedEffect(listState) {
+        snapshotFlow { listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index }
+            .collect{ lastVisibleItemIndex ->
+                if (lastVisibleItemIndex == uiPokemons.size - 1){
+                    viewModel.fetchMorePokemons() // chama para carregar mais pokemons
+                }
+            }
+    }
+
 
     Column(
         modifier = Modifier
@@ -82,20 +100,23 @@ fun PokeListScreen(
             )
         }
         PokemonListContent(
-            uiPokemons = uiPokemons
+            uiPokemons = uiPokemons,
+            listState = listState
         )
     }
 }
 
 @Composable
 private fun PokemonListContent(
-    uiPokemons: List<PokemonDto>
+    uiPokemons: List<PokemonDto>,
+    listState: LazyGridState
 ) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
         modifier = Modifier.fillMaxSize()
             .background(Color(0xFF767676)),
-        contentPadding = PaddingValues(8.dp)
+        contentPadding = PaddingValues(8.dp),
+        state = listState
     ) {
         items(uiPokemons) { pokemon ->
             PokemonItem(
@@ -136,7 +157,7 @@ fun PokemonItem(
                 contentDescription = "${pokemonDto.name} Poster image"
             )
             Text(
-                text = pokemonDto.name,
+                text = pokemonDto.name.replaceFirstChar { it.uppercase() }, // Deixa a primeira letra do nome maiscula
                 fontSize = 18.sp,
                 fontWeight = FontWeight.SemiBold,
                 color = Color(0xFF00BCD4)
