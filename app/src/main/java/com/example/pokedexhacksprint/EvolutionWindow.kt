@@ -50,7 +50,7 @@ fun PokedexScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.Black)
+            .background(Color.DarkGray)
             .padding(16.dp)
     ) {
         TopBar()
@@ -105,8 +105,8 @@ fun PokemonImage() {
         contentAlignment = Alignment.Center
     ) {
         Image(
-            painter = painterResource(id = R.drawable.charizard_background),
-            contentDescription = "Charizard"
+            painter = painterResource(id = R.drawable.charizard),
+            contentDescription = "charizar"
         )
     }
 }
@@ -156,7 +156,7 @@ fun TypeBadge(type: String, color: Color) {
     ) {
         Text(
             text = type,
-            color = Color.White,
+            color = Color.DarkGray,
             modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
             fontWeight = FontWeight.Bold
         )
