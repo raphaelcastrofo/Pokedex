@@ -19,26 +19,33 @@ class PokeListViewModel (
 
     private val _UiPokemons = MutableStateFlow<List<PokemonDto>>(emptyList())
     val uiPokemons: StateFlow<List<PokemonDto>> = _UiPokemons
+    private var currentOffset = 0 // para controlar o deslocamento dos pokemons
 
     init {
         fetchPokemons()
     }
 
-    private fun fetchPokemons(){
-        viewModelScope.launch(Dispatchers.IO) {
-            val response = listService.getPokemons()
-            if(response.isSuccessful){
+    // Funcao que carrega pokemons com limite e deslocamento
+    fun fetchPokemons(){
+        viewModelScope.launch (Dispatchers.IO){
+            val response = listService.getPokemons(limit = 20, offset = currentOffset)
+
+            if (response.isSuccessful){
                 val pokemons = response.body()?.results
+
                 if (pokemons != null){
-                    _UiPokemons.value = pokemons
+                    _UiPokemons.value = _UiPokemons.value + pokemons
+                    currentOffset += 20 // Atualiza o offset para carregar os proximos pokemons
                 }
-            }else {
+            } else {
                 Log.d("PokeListViewModel", "Request Error :: ${response.errorBody()}")
             }
         }
-
     }
 
+    fun fetchMorePokemons(){
+        fetchPokemons()
+    }
 
     companion object {
         val Factory : ViewModelProvider.Factory = object : ViewModelProvider.Factory {
