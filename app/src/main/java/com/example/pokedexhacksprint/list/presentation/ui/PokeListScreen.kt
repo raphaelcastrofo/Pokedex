@@ -67,11 +67,17 @@ fun PokeListScreen(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color(0xFFe74343))
+            .padding(top = 16.dp)
+            .background(Color(0xFF767676))
     ) {
 
         // Camada amarela do texto
-        Box(modifier = Modifier.align(Alignment.CenterHorizontally)) {
+        Box(modifier = Modifier
+            .fillMaxWidth()
+            .align(Alignment.CenterHorizontally)
+            .background(Color(0xFFe74343))
+            .padding(top = 16.dp)
+        ) {
             Text(
                 text = "Pokedex",
                 fontFamily = pokemonFontSolid,
@@ -99,6 +105,16 @@ fun PokeListScreen(
                     .align(Alignment.Center)
             )
         }
+
+        SearchBar(
+            hint = "Search",
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) { query ->
+
+        }
+
         PokemonListContent(
             uiPokemons = uiPokemons,
             listState = listState
