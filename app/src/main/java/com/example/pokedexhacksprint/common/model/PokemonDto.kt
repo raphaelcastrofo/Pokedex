@@ -1,5 +1,11 @@
 package com.example.pokedexapp
 
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import com.example.pokedexhacksprint.common.data.PokemonEntity
+
 data class PokemonDto(
     val name: String,
     val url: String?,
@@ -25,4 +31,19 @@ data class PokemonDto(
     data class Stat(val name: String)
 
     data class Sprites(val front_default: String)
+
+
 }
+
+@Dao
+interface PokemonDao {
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAll(pokemonList: List<PokemonEntity>)
+
+    @Query("SELECT * FROM pokemon_table")
+    suspend fun getAllPokemon(): List<PokemonEntity>
+}
+
+
+
+
