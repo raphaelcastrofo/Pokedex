@@ -15,7 +15,7 @@
         android:theme="@style/Theme.PokedexHackSprint"
         tools:targetApi="31" >
         <activity
-            android:name=".EvolutionWindow"
+            android:name=".detail.presentation.ui.EvolutionWindow"
             android:exported="false"
             android:label="@string/title_activity_evolution_window"
             android:theme="@style/Theme.PokedexHackSprint" />

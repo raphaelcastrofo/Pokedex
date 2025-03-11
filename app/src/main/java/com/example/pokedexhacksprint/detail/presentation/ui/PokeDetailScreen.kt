@@ -1,10 +1,5 @@
-package com.example.pokedexhacksprint
+package com.example.pokedexhacksprint.detail.presentation.ui
 
-import android.content.Intent
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -18,67 +13,89 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Card
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import com.example.pokedexapp.PokemonDto
+import com.example.pokedexhacksprint.R
+import com.example.pokedexhacksprint.detail.presentation.PokeDetailViewModel
 import com.example.pokedexhacksprint.ui.theme.PokedexHackSprintTheme
 
 
-class EvolutionWindow : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+@Composable
+fun PokeDetailScreen(
+    pokeName: String,
+    navHostController: NavHostController,
+    detailViewModel: PokeDetailViewModel
+){
+    val PokemonDto by detailViewModel.uiPoke.collectAsState()
+    detailViewModel.fetchMovieDetail(pokeName)
 
-        class EvolutionWindow : ComponentActivity() {
-            override fun onCreate(savedInstanceState: Bundle?) {
-                super.onCreate(savedInstanceState)
-
-                // Recuperando os dados do Pokémon que foram passados
-                val pokemonName = intent.getStringExtra("pokemon_name") ?: "Desconhecido"
-                val pokemonId = intent.getIntExtra("pokemon_id", 0)
-                val pokemonWeight = intent.getFloatExtra("pokemon_weight", 0.0f)
-                val pokemonHeight = intent.getFloatExtra("pokemon_height", 0.0f)
-
-                setContent {
-                    PokedexHackSprintTheme {
-                        PokedexScreen(pokemonName, pokemonId, pokemonWeight, pokemonHeight)
-                    }
+    PokemonDto?.let{
+        Column (
+            modifier = Modifier.fillMaxSize()
+        ){
+            Row (
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ){
+                IconButton(onClick = {
+                    detailViewModel.cleanPokemonId()
+                    navHostController.popBackStack()
+                }) {
+                    Icon(
+                        imageVector = Icons.Filled.ArrowBack,
+                        contentDescription = "Back Button"
+                    )
                 }
+
+                Text(
+                    color = colorResource(id = R.color.white),
+                    modifier = Modifier.padding(start = 4.dp),
+                    text = it.name)
+
             }
+            PokedexScreen(it)
         }
-
-
-            }
-        }
-
-
+    }
+}
 
 @Composable
-fun PokedexScreen(pokemonName: String, pokemonId: Int, weight: Float, height: Float) {
+fun PokedexScreen(pokemon: PokemonDto) {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.DarkGray)
             .padding(16.dp)
     ) {
-        TopBar(pokemonName, pokemonId)
+        TopBar(pokemon.name, pokemon.id)
         PokemonImage()
-        PokemonInfo(pokemonName, weight, height)
+        PokemonInfo(pokemon.name, pokemon.weight, pokemon.height)
         BaseStats()
     }
 }
 
 @Composable
-fun TopBar(name: String, id: Int) {
+fun TopBar(name: String, id: String) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -90,44 +107,6 @@ fun TopBar(name: String, id: Int) {
         Text(text = "#$id", color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Bold)
     }
 }
-
-
-
-@Composable
-fun PokedexScreen() {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.DarkGray)
-            .padding(16.dp)
-    ) {
-        TopBar()
-        PokemonImage()
-        PokemonInfo()
-        BaseStats()
-    }
-}
-
-
-
-
-
-@Composable
-fun TopBar() {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(Color.DarkGray)
-            .padding(16.dp),
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Text(text = "Pokedex", color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Bold)
-        Text(text = "#006", color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Bold)
-    }
-}
-
-
-
 
 
 @Composable
@@ -150,7 +129,7 @@ fun PokemonImage() {
 
 
 @Composable
-fun PokemonInfo(name: String, weight: Float, height: Float) {
+fun PokemonInfo(name: String, weight: Int, height: Int) {
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -245,18 +224,18 @@ fun StatBar(label: String, value: Int, max: Int, color: Color) {
 
 
 
-@Preview(showBackground = true)
-@Composable
-fun BaseStatsPreview() {
-    PokedexHackSprintTheme {
-        PokedexScreen(
-            pokemonName = "Charizard",
-            pokemonId = 6,
-            weight = 90.5f,
-            height = 1.7f
-        )
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun BaseStatsPreview() {
+//    PokedexHackSprintTheme {
+//        PokedexScreen(
+//            pokemonName = "Charizard",
+//            pokemonId = 6,
+//            weight = 90.5f,
+//            height = 1.7f
+//        )
+//    }
+//}
 
 
 

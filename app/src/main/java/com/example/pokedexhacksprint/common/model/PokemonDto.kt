@@ -16,7 +16,7 @@ data class PokemonDto(
     val sprites: Sprites
 
 )  {
-    val id : String
+    val id: String
         get() = url?.split("/")?.dropLast(1)?.lastOrNull() ?: "0"
 
     val frontFullDefault: String

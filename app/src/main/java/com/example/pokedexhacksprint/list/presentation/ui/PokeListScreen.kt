@@ -2,6 +2,7 @@ package com.example.pokedexhacksprint.list.presentation.ui
 
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -46,7 +47,7 @@ import com.example.pokedexhacksprint.list.presentation.PokeListViewModel
 fun PokeListScreen(
     navController: NavHostController,
     viewModel: PokeListViewModel
-    //onClick: (PokemonDto) -> Unit,
+
 ) {
     val uiPokemons by viewModel.uiPokemons.collectAsState()
     val pokemonFontSolid = FontFamily(Font(R.font.pokemon_solid))
@@ -63,7 +64,26 @@ fun PokeListScreen(
             }
     }
 
+    PokemonListContent(
+        pokemonFontSolid = pokemonFontSolid,
+        pokemonFontHollow = pokemonFontHollow,
+        pokemonDto = uiPokemons,
+        listState = listState
+    ) { itemClicked ->
+        navController.navigate(route = "pokeDetail/${itemClicked.name}")
+    }
+}
 
+
+
+@Composable
+private fun PokemonListContent(
+    pokemonFontSolid: FontFamily,
+    pokemonFontHollow: FontFamily,
+    pokemonDto: List<PokemonDto>,
+    listState: LazyGridState,
+    onClick: (PokemonDto) -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -115,18 +135,6 @@ fun PokeListScreen(
 
         }
 
-        PokemonListContent(
-            uiPokemons = uiPokemons,
-            listState = listState
-        )
-    }
-}
-
-@Composable
-private fun PokemonListContent(
-    uiPokemons: List<PokemonDto>,
-    listState: LazyGridState
-) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
         modifier = Modifier.fillMaxSize()
@@ -134,24 +142,24 @@ private fun PokemonListContent(
         contentPadding = PaddingValues(8.dp),
         state = listState
     ) {
-        items(uiPokemons) { pokemon ->
+        items(pokemonDto) { pokemonDto ->
             PokemonItem(
-                pokemonDto = pokemon,
-                //onClick = onClick
+                pokemonDto = pokemonDto,
+                onClick = onClick
             )
         }
     }
-}
+}}
 
 @Composable
 fun PokemonItem(
     pokemonDto: PokemonDto,
-    //onClick: (PokemonDto) -> Unit,
+    onClick: (PokemonDto) -> Unit,
 ) {
     Card(
         modifier = Modifier
             .padding(8.dp)
-            //.clickable { onClick(pokemonDto) }
+            .clickable { onClick.invoke(pokemonDto) }
             .fillMaxWidth(),
         elevation = CardDefaults.cardElevation(4.dp),
         shape = MaterialTheme.shapes.medium
