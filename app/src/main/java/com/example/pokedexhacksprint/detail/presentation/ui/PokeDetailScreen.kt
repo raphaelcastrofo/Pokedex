@@ -117,7 +117,7 @@ fun PokemonImage() {
             .height(180.dp)
             .padding(16.dp)
             .clip(RoundedCornerShape(16.dp))
-            .background(Color(0xFFE78A4E)),
+            .background(Color(0xFF878787)),
         contentAlignment = Alignment.Center
     ) {
         Image(
