@@ -1,5 +1,7 @@
 package com.example.pokedexhacksprint
 
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -17,12 +19,19 @@ fun PokedexApp(
     detailViewModel: PokeDetailViewModel
 ){
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = "pokeList"){
-        composable(route = "pokeList"){
+
+    NavHost(
+        navController = navController,
+        startDestination = "pokeList"
+    ){
+        composable(
+            route = "pokeList"
+        ){
             PokeListScreen(navController, listViewModel)
         }
+
         composable(
-            route = "pokeDetail" + "/{name}",
+            route = "pokeDetail/{name}",
             arguments = listOf(navArgument("name"){
                 type = NavType.StringType
             })
