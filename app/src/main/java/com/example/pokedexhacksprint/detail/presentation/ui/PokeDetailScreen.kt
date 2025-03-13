@@ -49,6 +49,7 @@ fun PokeDetailScreen(
     val PokemonDto by detailViewModel.uiPoke.collectAsState()
 
     LaunchedEffect(pokeName) {
+        detailViewModel.cleanPokemonId()
         detailViewModel.fetchMovieDetail(pokeName)
     }
 
