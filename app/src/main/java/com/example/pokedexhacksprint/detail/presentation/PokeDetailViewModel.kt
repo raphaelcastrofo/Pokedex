@@ -38,10 +38,9 @@ class PokeDetailViewModel(
     }
 
     fun cleanPokemonId() {
-        viewModelScope.launch {
-            delay(1000)
+
             _uiPoke.value = null
-        }
+
     }
     companion object {
         val Factory : ViewModelProvider.Factory = object : ViewModelProvider.Factory {
