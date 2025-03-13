@@ -1,6 +1,5 @@
 package com.example.pokedexhacksprint.detail.presentation.ui
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -11,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -19,26 +19,25 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import coil.compose.AsyncImage
 import com.example.pokedexapp.PokemonDto
 import com.example.pokedexhacksprint.R
 import com.example.pokedexhacksprint.detail.presentation.PokeDetailViewModel
-import com.example.pokedexhacksprint.ui.theme.PokedexHackSprintTheme
 
 
 @Composable
@@ -48,15 +47,19 @@ fun PokeDetailScreen(
     detailViewModel: PokeDetailViewModel
 ){
     val PokemonDto by detailViewModel.uiPoke.collectAsState()
-    detailViewModel.fetchMovieDetail(pokeName)
 
-    PokemonDto?.let{
+    LaunchedEffect(pokeName) {
+        detailViewModel.fetchMovieDetail(pokeName)
+    }
+
+    PokemonDto?.let{ pokemon ->
         Column (
             modifier = Modifier.fillMaxSize()
         ){
             Row (
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().background(Color.DarkGray),
                 verticalAlignment = Alignment.CenterVertically
+
             ){
                 IconButton(onClick = {
                     detailViewModel.cleanPokemonId()
@@ -65,16 +68,17 @@ fun PokeDetailScreen(
                     Icon(
                         imageVector = Icons.Filled.ArrowBack,
                         contentDescription = "Back Button"
+
                     )
                 }
 
                 Text(
-                    color = colorResource(id = R.color.white),
+                    color = colorResource(id = R.color.black),
                     modifier = Modifier.padding(start = 4.dp),
-                    text = it.name)
+                    text = pokemon.name)
 
             }
-            PokedexScreen(it)
+            PokedexScreen(pokemon)
         }
     }
 }
@@ -88,9 +92,31 @@ fun PokedexScreen(pokemon: PokemonDto) {
             .padding(16.dp)
     ) {
         TopBar(pokemon.name, pokemon.id)
-        PokemonImage()
+        Box(
+            modifier = Modifier
+                .height(180.dp)
+                .padding(16.dp)
+                .clip(RoundedCornerShape(16.dp))
+                .background(Color(0xFFE78A4E)),
+            contentAlignment = Alignment.Center
+        ) {
+            AsyncImage(
+                model = pokemon.sprites.front_default,
+                contentDescription = "Pokemon Image",
+                modifier = Modifier.size(300.dp),
+                contentScale = ContentScale.Crop
+
+            )
+        }
         PokemonInfo(pokemon.name, pokemon.weight, pokemon.height)
-        BaseStats()
+        pokemon.stats.forEach { stat ->
+            StatBar(
+                label = stat.stat.name.capitalize(),
+                value = stat.base_stat,
+                statName = stat.stat.name
+
+            )
+        }
     }
 }
 
@@ -110,25 +136,6 @@ fun TopBar(name: String, id: String) {
 
 
 @Composable
-fun PokemonImage() {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(180.dp)
-            .padding(16.dp)
-            .clip(RoundedCornerShape(16.dp))
-            .background(Color(0xFFE78A4E)),
-        contentAlignment = Alignment.Center
-    ) {
-        Image(
-            painter = painterResource(id = R.drawable.charizard),
-            contentDescription = "charizar"
-        )
-    }
-}
-
-
-@Composable
 fun PokemonInfo(name: String, weight: Int, height: Int) {
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -136,12 +143,15 @@ fun PokemonInfo(name: String, weight: Int, height: Int) {
     ) {
         Text(text = name, fontSize = 28.sp, fontWeight = FontWeight.Bold, color = Color.White)
         Spacer(modifier = Modifier.height(8.dp))
+
+        Spacer(modifier = Modifier.height(8.dp))
         Row(horizontalArrangement = Arrangement.SpaceEvenly, modifier = Modifier.fillMaxWidth()) {
-            Text(text = "${weight}KG", color = Color.White)
-            Text(text = "${height}M", color = Color.White)
+            Text(text = "Weight: ${weight} KG", color = Color.White)
+            Text(text = "Height: ${height} M", color = Color.White)
         }
     }
 }
+
 
 @Composable
 fun PokemonInfo() {
@@ -180,36 +190,54 @@ fun TypeBadge(type: String, color: Color) {
     }
 }
 
-
-
-
-
 @Composable
-fun BaseStats() {
+fun BaseStats(statName: String, value: Int) {
     Column(
         modifier = Modifier.fillMaxWidth()
     ) {
-        Text(text = "Base Stats", color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
-        StatBar("HP", 168, 300, Color.Red)
-        StatBar("ATK", 205, 300, Color.Yellow)
-        StatBar("DEF", 64, 300, Color.Blue)
-        StatBar("SPD", 204, 300, Color.Green)
-        StatBar("EXP", 295, 1000, Color(0xFF4CAF50))
+        Text(
+            text = "Base Stats",
+            color = Color.White,
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Bold
+        )
+        Text(text = statName, fontWeight = FontWeight.Bold)
+        LinearProgressIndicator(
+            progress = value / 300f,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(10.dp),
+            color = Color.Red
+        )
+
     }
 }
 
+// Mapeando as cores para cada stat
+val statColorMap = mapOf(
+    "hp" to Color(0xFFFC4C4C), // Vermelho para HP
+    "attack" to Color(0xFF4C91FC), // Azul para Ataque
+    "defense" to Color(0xFF8BC34A), // Verde para Defesa
+    "special-attack" to Color(0xFFFFC107), // Amarelo para Ataque Especial
+    "special-defense" to Color(0xFF9C27B0), // Roxo para Defesa Especial
+    "speed" to Color(0xFF00BCD4) // Ciano para Velocidade
+)
 
 
 @Composable
-fun StatBar(label: String, value: Int, max: Int, color: Color) {
-    Column(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
+fun StatBar(label: String, value: Int, statName: String) {
+    val color = statColorMap[statName] ?: Color.Gray
+    val maxValue = 255f
+    Column(modifier = Modifier
+        .fillMaxWidth()
+        .padding(vertical = 4.dp)) {
         Text(text = label, color = Color.White)
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
             LinearProgressIndicator(
-                progress = { value / max.toFloat() },
+                progress = value / maxValue,
                 color = color,
                 trackColor = Color.Gray,
                 modifier = Modifier
@@ -217,25 +245,13 @@ fun StatBar(label: String, value: Int, max: Int, color: Color) {
                     .height(8.dp)
             )
             Spacer(modifier = Modifier.width(8.dp))
-            Text(text = "$value/$max", color = Color.White, fontSize = 12.sp)
+            Text(
+                text = "$value / $maxValue",
+                color = Color.White,
+                fontSize = 12.sp)
         }
     }
 }
-
-
-
-//@Preview(showBackground = true)
-//@Composable
-//fun BaseStatsPreview() {
-//    PokedexHackSprintTheme {
-//        PokedexScreen(
-//            pokemonName = "Charizard",
-//            pokemonId = 6,
-//            weight = 90.5f,
-//            height = 1.7f
-//        )
-//    }
-//}
 
 
 
