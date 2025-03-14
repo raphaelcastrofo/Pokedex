@@ -1,24 +1,20 @@
 package com.example.pokedexhacksprint.detail.presentation.ui
 
-import android.graphics.drawable.Icon
-import android.text.Layout
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
@@ -30,23 +26,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.example.pokedexapp.PokemonDto
-import com.example.pokedexhacksprint.R
-import com.example.pokedexhacksprint.detail.data.DetailService
 import com.example.pokedexhacksprint.detail.presentation.PokeDetailViewModel
 import com.example.pokedexhacksprint.ui.theme.getTypeColor
 
@@ -76,28 +64,68 @@ fun TopBar(pokemon: PokemonDto,
            navHostController: NavHostController,
            detailViewModel: PokeDetailViewModel
 ) {
-    val primaryTipe = pokemon.types.firstOrNull()?.type?.name ?: "normal"
-    val cardBackgroundColor =  getTypeColor(primaryTipe)
 
-        Row(
+
+    Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(Color(0xFFECECEC))
-                .padding(16.dp),
-            horizontalArrangement = Arrangement.Start
+                .background(Color.White),
+            verticalArrangement = Arrangement.Top
         ) {
             IconButton(
                 onClick = {
                     detailViewModel.cleanPokemonId()
                     navHostController.popBackStack()
                 },
-                modifier = Modifier.padding(top = 16.dp)
+                modifier = Modifier.padding(top = 24.dp)
             ) {
                 Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = " Back Button ")
             }
-        }
 
+        Box(modifier = Modifier
+            .background(Color.White)
+            .height(80.dp)
+        ){
+
+            Text(
+                text = pokemon.name.uppercase(),
+                fontSize = 75.sp,
+                fontWeight = FontWeight.ExtraBold,
+                color = Color(0xFFECECEC),
+                modifier = Modifier
+                    .fillMaxWidth()  // O texto vai ocupar toda a largura da Box
+                    .fillMaxHeight()  // A altura da Box será 100% ocupada pelo texto
+                    .align(Alignment.Center), // Centraliza o texto verticalmente sem deixar espaço
+                maxLines = 1, // Garante que o texto não quebre em múltiplas linhas
+                overflow = TextOverflow.Clip  // Corta o texto sem mostrar "..."
+            )
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                verticalArrangement = Arrangement.Top
+            ) {
+                Text(
+                    text = "#${pokemon.id}",
+                    color = Color.DarkGray,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(start = 16.dp,top = 16.dp)
+                )
+
+                Text(
+                    text = pokemon.name.capitalize(),
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.DarkGray,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 16.dp),
+
+                    )
+            }
+        }
     }
+}
 
 
 @Composable
@@ -108,7 +136,7 @@ fun PokedexScreen(pokemon: PokemonDto) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFECECEC))
+            .background(Color.White)
 
     ) {
 
@@ -116,7 +144,7 @@ fun PokedexScreen(pokemon: PokemonDto) {
             modifier = Modifier
                 .height(250.dp)
                 .fillMaxWidth()
-                .background(cardBackgroundColor),
+                .background(Color.White),
             contentAlignment = Alignment.Center
         ) {
             AsyncImage(
@@ -129,27 +157,9 @@ fun PokedexScreen(pokemon: PokemonDto) {
                 contentScale = ContentScale.Fit
             )
 
-            Text(
-                text = "#${pokemon.id}",
-                color = Color.White,
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier
-                    .padding(16.dp)
-                    .align(Alignment.TopEnd)
-            )
+
         }
 
-        Text(
-            text = pokemon.name.capitalize(),
-            fontSize = 28.sp,
-            fontWeight = FontWeight.Bold,
-            color = cardBackgroundColor,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 16.dp),
-            textAlign = TextAlign.Center
-        )
 
         Row (
             modifier = Modifier
