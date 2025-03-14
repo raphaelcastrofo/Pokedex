@@ -65,22 +65,23 @@ fun PokeDetailScreen(
 
     PokemonDto?.let{ pokemon ->
         Column (modifier = Modifier.fillMaxSize()){
-            TopBar(pokemon.name, pokemon.id.toString(), navHostController, detailViewModel)
+            TopBar(pokemon,navHostController, detailViewModel)
             PokedexScreen(pokemon)
         }
     }
 }
 
 @Composable
-fun TopBar(name: String,
-           id: String,
+fun TopBar(pokemon: PokemonDto,
            navHostController: NavHostController,
            detailViewModel: PokeDetailViewModel
 ) {
+    val primaryTipe = pokemon.types.firstOrNull()?.type?.name ?: "normal"
+    val cardBackgroundColor =  getTypeColor(primaryTipe)
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color.DarkGray)
+            .background(Color(0xFFECECEC))
             .padding(16.dp),
         horizontalArrangement = Arrangement.Start
     ) {
@@ -103,15 +104,14 @@ fun PokedexScreen(pokemon: PokemonDto) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.DarkGray)
-            .padding(horizontal = 16.dp)
+            .background(Color(0xFFECECEC))
+
     ) {
 
         Box(
             modifier = Modifier
                 .height(250.dp)
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(16.dp))
                 .background(cardBackgroundColor),
             contentAlignment = Alignment.Center
         ) {
@@ -120,7 +120,7 @@ fun PokedexScreen(pokemon: PokemonDto) {
                 contentDescription = "Pokemon Image",
                 modifier = Modifier
                     .fillMaxSize()
-                    .height(180.dp)
+                    .height(250.dp)
                     .clip(RoundedCornerShape(16.dp)),
                 contentScale = ContentScale.Fit
             )
@@ -140,7 +140,7 @@ fun PokedexScreen(pokemon: PokemonDto) {
             text = pokemon.name.capitalize(),
             fontSize = 28.sp,
             fontWeight = FontWeight.Bold,
-            color = Color.White,
+            color = cardBackgroundColor,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 16.dp),
@@ -208,9 +208,9 @@ fun StatBar(label: String, value: Int, statName: String) {
     val maxValue = 255f
     Column(modifier = Modifier
         .fillMaxWidth()
-        .padding(vertical = 4.dp)
+        .padding(vertical = 4.dp, horizontal = 16.dp)
     ){
-        Text(text = label, color = Color.White)
+        Text(text = label, color = Color.DarkGray)
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
@@ -218,7 +218,7 @@ fun StatBar(label: String, value: Int, statName: String) {
             LinearProgressIndicator(
                 progress = value / maxValue,
                 color = color,
-                trackColor = Color.White,
+                trackColor = Color.LightGray,
                 modifier = Modifier
                     .weight(1f)
                     .height(12.dp)
@@ -227,7 +227,7 @@ fun StatBar(label: String, value: Int, statName: String) {
             Spacer(modifier = Modifier.width(8.dp))
             Text(
                 text = "$value / $maxValue",
-                color = Color.White,
+                color = Color.DarkGray,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold
             )
@@ -250,12 +250,12 @@ fun PokemonInfo(weight: Int, height: Int) {
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(text = "Weight: ${weight} KG",
-                color = Color.White,
+                color = Color.DarkGray,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold
             )
             Text(text = "Height: ${height} M",
-                color = Color.White,
+                color = Color.DarkGray,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold
             )
