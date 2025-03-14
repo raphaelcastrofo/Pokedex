@@ -25,4 +25,7 @@ abstract class PokemonDatabase : RoomDatabase() {
             }
         }
     }
+
+
+
 }

@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.example.pokedexhacksprint.common.data.PokemonEntity
+import kotlinx.coroutines.flow.Flow
 
 data class PokemonDto(
     val id: Int,
@@ -35,15 +36,22 @@ data class PokemonDto(
     data class Sprites(val front_default: String)
 }
 
-@Dao
+/*@Dao
 interface PokemonDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(pokemonList: List<PokemonEntity>)
 
     @Query("SELECT * FROM pokemon_table")
     suspend fun getAllPokemon(): List<PokemonEntity>
+}*/
+
+
+@Dao
+interface PokemonDao {
+    @Query("SELECT * FROM pokemon_table ORDER BY id ASC")
+    fun getPokemonList(): Flow<List<PokemonEntity>>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAll(pokemonList: List<PokemonEntity>)
 }
-
-
-
 
