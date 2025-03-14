@@ -150,7 +150,7 @@ fun PokedexScreen(pokemon: PokemonDto) {
             contentAlignment = Alignment.Center
         ) {
             AsyncImage(
-                model = pokemon.sprites.front_default,
+                model = pokemon.frontFullDefault,
                 contentDescription = "Pokemon Image",
                 modifier = Modifier
                     .fillMaxSize()
@@ -232,13 +232,14 @@ fun StatBar(label: String, value: Int, statName: String) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             LinearProgressIndicator(
-                progress = value / maxValue,
-                color = color,
-                trackColor = Color.LightGray,
-                modifier = Modifier
-                    .weight(1f)
-                    .height(12.dp)
-                    .clip(RoundedCornerShape(8.dp))
+            progress = { value / maxValue },
+            modifier = Modifier
+                                .weight(1f)
+                                .height(12.dp)
+                                .clip(RoundedCornerShape(8.dp)),
+            color = color,
+            trackColor = Color.LightGray,
+
             )
             Spacer(modifier = Modifier.width(8.dp))
             Text(
