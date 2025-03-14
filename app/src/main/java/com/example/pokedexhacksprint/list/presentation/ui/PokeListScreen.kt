@@ -110,9 +110,13 @@ private fun PokemonListContent(
                     fontWeight = FontWeight.ExtraBold,
                     fontSize = 64.sp,
                     color = Color(0xFFFFCB05) // Cor amarela
+
+
                 ),
                 modifier = Modifier
-                    .align(Alignment.Center)
+                    .align(Alignment.BottomCenter)
+
+
             )
 
 
@@ -125,8 +129,8 @@ private fun PokemonListContent(
                     color = Color(0xFF3466AF) //contorno
                 ),
                 modifier = Modifier
-                    .padding(16.dp)
-                    .align(Alignment.Center)
+                    .padding(4.dp)
+                    .align(Alignment.BottomCenter)
             )
         }
 
