@@ -14,6 +14,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
+
+
+
 class PokeDetailViewModel(
     private val detailService: DetailService
 ): ViewModel() {

@@ -93,15 +93,14 @@ private fun PokemonListContent(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 44.dp)
-            .background(Color(0xFF767676))
+            .background(Color(0xFFBB484B))
     ) {
 
         // Camada amarela do texto
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(Color(0xFFe74343))
+                .background(Color(0xFFBB484B))
                 .height(160.dp)
         ) {
             Text(
@@ -110,24 +109,28 @@ private fun PokemonListContent(
                 style = MaterialTheme.typography.headlineMedium.copy(
                     fontWeight = FontWeight.ExtraBold,
                     fontSize = 64.sp,
-                    color = Color(0xFFffe800) // Cor amarela
+                    color = Color(0xFFFFCB05) // Cor amarela
+
+
                 ),
                 modifier = Modifier
-                    .align(Alignment.Center)
+                    .align(Alignment.BottomCenter)
+
+
             )
 
-            // Camada de contorno do texto (cor azul)
+
             Text(
-                text = "Pokedex",
+                text = "Pokedéx",
                 fontFamily = pokemonFontHollow,
                 style = MaterialTheme.typography.headlineMedium.copy(
                     fontWeight = FontWeight.Bold,
                     fontSize = 64.sp,
-                    color = Color(0xFF2553ff) //contorno
+                    color = Color(0xFF3466AF) //contorno
                 ),
                 modifier = Modifier
-                    .padding(16.dp)
-                    .align(Alignment.Center)
+                    .padding(4.dp)
+                    .align(Alignment.BottomCenter)
             )
         }
 
@@ -135,9 +138,11 @@ private fun PokemonListContent(
 
         SearchBar(
             hint = "Search",
+
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp)
+
         ) { query ->
 
         }
@@ -146,7 +151,7 @@ private fun PokemonListContent(
             columns = GridCells.Fixed(2),
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color(0xFF767676)),
+                .background(Color(0xFFFFFFFF)),
             contentPadding = PaddingValues(8.dp),
             state = listState
         ) {
@@ -200,7 +205,7 @@ fun PokemonItem(
                 text = pokemonDto.name.replaceFirstChar { it.uppercase() }, // Deixa a primeira letra do nome maiscula
                 fontSize = 18.sp,
                 fontWeight = FontWeight.SemiBold,
-                color = Color(0xFF00BCD4)
+                color = Color(0xFFFFFFFF)
             )
         }
     }
