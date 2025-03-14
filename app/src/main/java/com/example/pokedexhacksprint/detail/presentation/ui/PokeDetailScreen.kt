@@ -117,7 +117,7 @@ fun PokedexScreen(pokemon: PokemonDto) {
         Box(
             modifier = Modifier
                 .padding(15.dp)
-                .height(220.dp)
+                .height(170.dp)
                 .fillMaxWidth()
                 .border(10.dp, Color.Transparent, shape = RoundedCornerShape(30.dp))
                 .background(cardBackgroundColor),
