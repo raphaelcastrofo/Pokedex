@@ -1,6 +1,7 @@
 package com.example.pokedexhacksprint.detail.presentation.ui
 
 import android.graphics.drawable.Icon
+import android.text.Layout
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -50,7 +52,7 @@ fun PokeDetailScreen(
     navHostController: NavHostController,
     detailViewModel: PokeDetailViewModel
 ){
-    val PokemonDto by detailViewModel.uiPoke.collectAsState()
+    val PokemonDto: PokemonDto? by detailViewModel.uiPoke.collectAsState()
 
     LaunchedEffect(pokeName) {
         detailViewModel.cleanPokemonId()
@@ -59,7 +61,7 @@ fun PokeDetailScreen(
 
     PokemonDto?.let{ pokemon ->
         Column (modifier = Modifier.fillMaxSize()){
-            TopBar(pokemon.name, pokemon.id, navHostController, detailViewModel)
+            TopBar(pokemon.name, pokemon.id.toString(), navHostController, detailViewModel)
             PokedexScreen(pokemon)
         }
     }
@@ -98,14 +100,13 @@ fun PokedexScreen(pokemon: PokemonDto) {
         modifier = Modifier
             .fillMaxSize()
             .background(Color.DarkGray)
-            .padding(16.dp)
+            .padding(horizontal = 16.dp)
     ) {
 
         Box(
             modifier = Modifier
                 .height(250.dp)
                 .fillMaxWidth()
-                .padding(16.dp)
                 .clip(RoundedCornerShape(16.dp))
                 .background(cardBackgroundColor),
             contentAlignment = Alignment.Center
@@ -118,6 +119,16 @@ fun PokedexScreen(pokemon: PokemonDto) {
                     .height(180.dp)
                     .clip(RoundedCornerShape(16.dp)),
                 contentScale = ContentScale.Fit
+            )
+
+            Text(
+                text = "#${pokemon.id}",
+                color = Color.White,
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier
+                    .padding(16.dp)
+                    .align(Alignment.TopEnd)
             )
         }
 
@@ -139,12 +150,17 @@ fun PokedexScreen(pokemon: PokemonDto) {
             horizontalArrangement = Arrangement.Center
         ){
             pokemon.types.forEachIndexed { _, type ->
-                TypeBadge(type = type.type.name, color = getTypeColor(type.type.name))
+                TypeBadge(type = type.type.name,
+                    color = getTypeColor(type.type.name)
+                )
                 Spacer(modifier = Modifier.width(8.dp))
             }
         }
 
         PokemonInfo(pokemon.weight, pokemon.height)
+
+        Spacer(modifier = Modifier
+            .height(24.dp))
 
         pokemon.stats.forEach { stat ->
             StatBar(
@@ -198,16 +214,18 @@ fun StatBar(label: String, value: Int, statName: String) {
             LinearProgressIndicator(
                 progress = value / maxValue,
                 color = color,
-                trackColor = Color.Gray,
+                trackColor = Color.White,
                 modifier = Modifier
                     .weight(1f)
-                    .height(8.dp)
+                    .height(12.dp)
+                    .clip(RoundedCornerShape(8.dp))
             )
             Spacer(modifier = Modifier.width(8.dp))
             Text(
                 text = "$value / $maxValue",
                 color = Color.White,
-                fontSize = 12.sp
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold
             )
         }
     }
@@ -216,13 +234,27 @@ fun StatBar(label: String, value: Int, statName: String) {
 @Composable
 fun PokemonInfo(weight: Int, height: Int) {
     Column(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Spacer(modifier = Modifier.height(8.dp))
-        Row(horizontalArrangement = Arrangement.SpaceEvenly, modifier = Modifier.fillMaxWidth()) {
-            Text(text = "Weight: ${weight} KG", color = Color.White)
-            Text(text = "Height: ${height} M", color = Color.White)
+
+        Row(
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(text = "Weight: ${weight} KG",
+                color = Color.White,
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold
+            )
+            Text(text = "Height: ${height} M",
+                color = Color.White,
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold
+            )
         }
     }
 }
