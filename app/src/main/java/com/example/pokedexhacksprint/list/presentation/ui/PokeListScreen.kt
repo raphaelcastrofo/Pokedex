@@ -134,7 +134,7 @@ private fun PokemonListContent(
             )
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(17.dp))
 
         SearchBar(
             hint = "Search",
