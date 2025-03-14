@@ -104,7 +104,7 @@ private fun PokemonListContent(
                 .height(160.dp)
         ) {
             Text(
-                text = "Pokedex",
+                text = "Pokedéx",
                 fontFamily = pokemonFontSolid,
                 style = MaterialTheme.typography.headlineMedium.copy(
                     fontWeight = FontWeight.ExtraBold,
@@ -186,7 +186,7 @@ fun PokemonItem(
     ) {
         Column(
             modifier = Modifier
-                .background(Color.DarkGray) // Fundo colorido
+                .background(Color(0xFFececec)) // Fundo colorido
                 .fillMaxWidth()
                 .padding(8.dp),
             horizontalAlignment = Alignment.CenterHorizontally
@@ -205,7 +205,7 @@ fun PokemonItem(
                 text = pokemonDto.name.replaceFirstChar { it.uppercase() }, // Deixa a primeira letra do nome maiscula
                 fontSize = 18.sp,
                 fontWeight = FontWeight.SemiBold,
-                color = Color(0xFFFFFFFF)
+                color = Color.DarkGray
             )
         }
     }
