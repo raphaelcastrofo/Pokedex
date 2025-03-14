@@ -93,7 +93,6 @@ private fun PokemonListContent(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 44.dp)
             .background(Color(0xFFBB484B))
     ) {
 
