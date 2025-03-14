@@ -1,6 +1,8 @@
 package com.example.pokedexhacksprint.list.presentation.ui
 
 
+import android.util.Log
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -19,6 +21,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -34,6 +37,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -161,6 +165,7 @@ fun PokemonItem(
     pokemonDto: PokemonDto,
     onClick: (PokemonDto) -> Unit,
 ) {
+
     Card(
         modifier = Modifier
             .padding(8.dp)
@@ -181,13 +186,14 @@ fun PokemonItem(
                 .padding(8.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            AsyncImage(
+
+        AsyncImage(
+            model = pokemonDto.frontFullDefault,
                 modifier = Modifier
                     .padding(bottom = 8.dp)
                     .width(120.dp)
                     .height(120.dp),
                 contentScale = ContentScale.Crop,
-                model = pokemonDto.frontFullDefault,
                 contentDescription = "${pokemonDto.name} Poster image"
             )
             Text(

@@ -19,7 +19,12 @@ data class PokemonDto(
 )  {
 
     val frontFullDefault: String
-        get() = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png"
+        get() = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${getPokemonIdFromUrl(url)}.png"
+
+
+    private fun getPokemonIdFromUrl(url: String?): Int {
+        return url?.split("pokemon/")?.getOrNull(1)?.split("/")?.getOrNull(0)?.toIntOrNull() ?: id
+    }
 
     data class TypeSlot(val type: PokemonType)
     data class PokemonType(val name: String)
