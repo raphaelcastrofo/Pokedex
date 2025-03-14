@@ -104,17 +104,17 @@ private fun PokemonListContent(
                 .height(160.dp)
         ) {
             Text(
-                text = "Pokedéx",
-                fontFamily = pokemonFontSolid,
-                style = MaterialTheme.typography.headlineMedium.copy(
-                    fontWeight = FontWeight.ExtraBold,
-                    fontSize = 64.sp,
-                    color = Color(0xFFFFCB05) // Cor amarela
+                    text = "Pokedéx",
+            fontFamily = pokemonFontSolid,
+            style = MaterialTheme.typography.headlineMedium.copy(
+                fontWeight = FontWeight.ExtraBold,
+                fontSize = 64.sp,
+                color = Color(0xFFFFCB05) // Cor amarela
 
 
-                ),
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
+            ),
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
 
 
             )
@@ -134,7 +134,7 @@ private fun PokemonListContent(
             )
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(17.dp))
 
         SearchBar(
             hint = "Search",
