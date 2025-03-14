@@ -203,7 +203,7 @@ fun PokemonItem(
             )
             Text(
                 text = pokemonDto.name.replaceFirstChar { it.uppercase() }, // Deixa a primeira letra do nome maiscula
-                fontSize = 19.sp,
+                fontSize = 18.sp,
                 fontWeight = FontWeight.SemiBold,
                 color = Color.DarkGray
             )
