@@ -1,7 +1,5 @@
 package com.example.pokedexhacksprint.detail.presentation.ui
 
-import android.graphics.drawable.Icon
-import android.text.Layout
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -9,18 +7,16 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
@@ -32,23 +28,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.example.pokedexapp.PokemonDto
-import com.example.pokedexhacksprint.R
-import com.example.pokedexhacksprint.detail.data.DetailService
 import com.example.pokedexhacksprint.detail.presentation.PokeDetailViewModel
 import com.example.pokedexhacksprint.ui.theme.getTypeColor
 
@@ -78,28 +66,68 @@ fun TopBar(pokemon: PokemonDto,
            navHostController: NavHostController,
            detailViewModel: PokeDetailViewModel
 ) {
-    val primaryTipe = pokemon.types.firstOrNull()?.type?.name ?: "normal"
-    val cardBackgroundColor =  getTypeColor(primaryTipe)
 
-        Row(
+
+    Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(Color(0xFFECECEC))
-                ,
-            horizontalArrangement = Arrangement.Start
+                .background(Color.White),
+            verticalArrangement = Arrangement.Top
         ) {
             IconButton(
                 onClick = {
                     detailViewModel.cleanPokemonId()
                     navHostController.popBackStack()
                 },
-                modifier = Modifier.padding(top = 0.dp)
+                modifier = Modifier.padding(top = 24.dp)
             ) {
                 Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = " Back Button ")
             }
-        }
 
+        Box(modifier = Modifier
+            .background(Color.White)
+            .height(80.dp)
+        ){
+
+            Text(
+                text = pokemon.name.uppercase(),
+                fontSize = 75.sp,
+                fontWeight = FontWeight.ExtraBold,
+                color = Color(0xFFECECEC),
+                modifier = Modifier
+                    .fillMaxWidth()  // O texto vai ocupar toda a largura da Box
+                    .fillMaxHeight()  // A altura da Box será 100% ocupada pelo texto
+                    .align(Alignment.Center), // Centraliza o texto verticalmente sem deixar espaço
+                maxLines = 1, // Garante que o texto não quebre em múltiplas linhas
+                overflow = TextOverflow.Clip  // Corta o texto sem mostrar "..."
+            )
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                verticalArrangement = Arrangement.Top
+            ) {
+                Text(
+                    text = "#${pokemon.id}",
+                    color = Color.DarkGray,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(start = 16.dp,top = 16.dp)
+                )
+
+                Text(
+                    text = pokemon.name.capitalize(),
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.DarkGray,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 16.dp),
+
+                    )
+            }
+        }
     }
+}
 
 
 @Composable
@@ -110,18 +138,15 @@ fun PokedexScreen(pokemon: PokemonDto) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFECECEC))
+            .background(Color.White)
 
     ) {
 
         Box(
             modifier = Modifier
-                .padding(15.dp)
-                .height(170.dp)
+                .height(250.dp)
                 .fillMaxWidth()
-                .border(10.dp, Color.Transparent, shape = RoundedCornerShape(30.dp))
-                .background(cardBackgroundColor),
-
+                .background(Color.White),
             contentAlignment = Alignment.Center
         ) {
             AsyncImage(
@@ -134,27 +159,9 @@ fun PokedexScreen(pokemon: PokemonDto) {
                 contentScale = ContentScale.Fit
             )
 
-            Text(
-                text = "#${pokemon.id}",
-                color = Color.White,
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier
-                    .padding(16.dp)
-                    .align(Alignment.TopEnd)
-            )
+
         }
 
-        Text(
-            text = pokemon.name.capitalize(),
-            fontSize = 28.sp,
-            fontWeight = FontWeight.Bold,
-            color = cardBackgroundColor,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 16.dp),
-            textAlign = TextAlign.Center
-        )
 
         Row (
             modifier = Modifier
@@ -189,7 +196,7 @@ fun PokedexScreen(pokemon: PokemonDto) {
 fun TypeBadge(type: String, color: Color) {
     Box(
         modifier = Modifier
-            .padding(10.dp)
+            .padding(4.dp)
             .background(color, shape = RoundedCornerShape(16.dp))
             .padding(horizontal = 16.dp, vertical = 8.dp)
     ) {
@@ -203,12 +210,12 @@ fun TypeBadge(type: String, color: Color) {
 }
 
 val statColorMap = mapOf(
-    "hp" to Color(0xFFBC464D),
-    "attack" to Color(0xFFE6AB4A),
-    "defense" to Color(0xFF7BB2D6),
-    "special-attack" to Color(0xFF9AB1C4),
-    "special-defense" to Color(0xFF8EBA80),
-    "speed" to Color(0xFFF50F58)
+    "hp" to Color(0xFFFC4C4C), // Vermelho para HP
+    "attack" to Color(0xFF4C91FC), // Azul para Ataque
+    "defense" to Color(0xFF8BC34A), // Verde para Defesa
+    "special-attack" to Color(0xFFFFC107), // Amarelo para Ataque Especial
+    "special-defense" to Color(0xFF9C27B0), // Roxo para Defesa Especial
+    "speed" to Color(0xFF00BCD4) // Ciano para Velocidade
 )
 
 @Composable
@@ -216,8 +223,8 @@ fun StatBar(label: String, value: Int, statName: String) {
     val color = statColorMap[statName] ?: Color.Gray
     val maxValue = 255f
     Column(modifier = Modifier
-        .fillMaxWidth().padding(horizontal = 25.dp)
-        .padding(vertical = 4.dp, horizontal = 7.dp)
+        .fillMaxWidth()
+        .padding(vertical = 4.dp, horizontal = 16.dp)
     ){
         Text(text = label, color = Color.DarkGray)
         Row(
@@ -230,15 +237,14 @@ fun StatBar(label: String, value: Int, statName: String) {
                 trackColor = Color.LightGray,
                 modifier = Modifier
                     .weight(1f)
-                    .height(9.dp)
+                    .height(12.dp)
                     .clip(RoundedCornerShape(8.dp))
             )
             Spacer(modifier = Modifier.width(8.dp))
-
             Text(
                 text = "$value / $maxValue",
                 color = Color.DarkGray,
-                fontSize = 18.sp,
+                fontSize = 16.sp,
                 fontWeight = FontWeight.Bold
             )
         }
@@ -250,7 +256,7 @@ fun PokemonInfo(weight: Int, height: Int) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 10.dp),
+            .padding(top = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Spacer(modifier = Modifier.height(8.dp))
