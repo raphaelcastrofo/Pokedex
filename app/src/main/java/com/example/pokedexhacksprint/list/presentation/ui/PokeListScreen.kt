@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -18,6 +19,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -29,6 +31,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.Font
@@ -57,8 +60,8 @@ fun PokeListScreen(
     // Carregar mais pokemons quando scrollar
     LaunchedEffect(listState) {
         snapshotFlow { listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index }
-            .collect{ lastVisibleItemIndex ->
-                if (lastVisibleItemIndex == uiPokemons.size - 1){
+            .collect { lastVisibleItemIndex ->
+                if (lastVisibleItemIndex == uiPokemons.size - 1) {
                     viewModel.fetchMorePokemons() // chama para carregar mais pokemons
                 }
             }
@@ -75,7 +78,6 @@ fun PokeListScreen(
 }
 
 
-
 @Composable
 private fun PokemonListContent(
     pokemonFontSolid: FontFamily,
@@ -87,16 +89,16 @@ private fun PokemonListContent(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 16.dp)
+            .padding(top = 44.dp)
             .background(Color(0xFF767676))
     ) {
 
         // Camada amarela do texto
-        Box(modifier = Modifier
-            .fillMaxWidth()
-            .align(Alignment.CenterHorizontally)
-            .background(Color(0xFFe74343))
-            .padding(top = 16.dp)
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Color(0xFFe74343))
+                .height(160.dp)
         ) {
             Text(
                 text = "Pokedex",
@@ -107,7 +109,6 @@ private fun PokemonListContent(
                     color = Color(0xFFffe800) // Cor amarela
                 ),
                 modifier = Modifier
-                    .padding(16.dp)
                     .align(Alignment.Center)
             )
 
@@ -116,7 +117,7 @@ private fun PokemonListContent(
                 text = "Pokedex",
                 fontFamily = pokemonFontHollow,
                 style = MaterialTheme.typography.headlineMedium.copy(
-                    fontWeight = FontWeight.Bold ,
+                    fontWeight = FontWeight.Bold,
                     fontSize = 64.sp,
                     color = Color(0xFF2553ff) //contorno
                 ),
@@ -125,6 +126,8 @@ private fun PokemonListContent(
                     .align(Alignment.Center)
             )
         }
+
+        Spacer(modifier = Modifier.height(16.dp))
 
         SearchBar(
             hint = "Search",
@@ -135,21 +138,23 @@ private fun PokemonListContent(
 
         }
 
-    LazyVerticalGrid(
-        columns = GridCells.Fixed(2),
-        modifier = Modifier.fillMaxSize()
-            .background(Color(0xFF767676)),
-        contentPadding = PaddingValues(8.dp),
-        state = listState
-    ) {
-        items(pokemonDto) { pokemonDto ->
-            PokemonItem(
-                pokemonDto = pokemonDto,
-                onClick = onClick
-            )
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(2),
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color(0xFF767676)),
+            contentPadding = PaddingValues(8.dp),
+            state = listState
+        ) {
+            items(pokemonDto) { pokemonDto ->
+                PokemonItem(
+                    pokemonDto = pokemonDto,
+                    onClick = onClick
+                )
+            }
         }
     }
-}}
+}
 
 @Composable
 fun PokemonItem(
@@ -162,7 +167,12 @@ fun PokemonItem(
             .clickable { onClick.invoke(pokemonDto) }
             .fillMaxWidth(),
         elevation = CardDefaults.cardElevation(4.dp),
-        shape = MaterialTheme.shapes.medium
+        shape = RoundedCornerShape(
+            topStart = 16.dp,
+            topEnd = 16.dp,
+            bottomStart = 24.dp,
+            bottomEnd = 24.dp
+        )
     ) {
         Column(
             modifier = Modifier

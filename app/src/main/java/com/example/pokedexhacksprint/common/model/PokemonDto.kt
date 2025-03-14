@@ -7,6 +7,7 @@ import androidx.room.Query
 import com.example.pokedexhacksprint.common.data.PokemonEntity
 
 data class PokemonDto(
+    val id: Int,
     val name: String,
     val url: String?,
     val height: Int,
@@ -16,13 +17,9 @@ data class PokemonDto(
     val sprites: Sprites
 
 )  {
-    val id: String
-        get() = url?.split("/")?.dropLast(1)?.lastOrNull() ?: "0"
 
     val frontFullDefault: String
         get() = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png"
-
-
 
     data class TypeSlot(val type: PokemonType)
     data class PokemonType(val name: String)
@@ -31,8 +28,6 @@ data class PokemonDto(
     data class Stat(val name: String)
 
     data class Sprites(val front_default: String)
-
-
 }
 
 @Dao
