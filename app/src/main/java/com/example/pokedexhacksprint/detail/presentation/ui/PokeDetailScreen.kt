@@ -78,23 +78,27 @@ fun TopBar(pokemon: PokemonDto,
 ) {
     val primaryTipe = pokemon.types.firstOrNull()?.type?.name ?: "normal"
     val cardBackgroundColor =  getTypeColor(primaryTipe)
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(Color(0xFFECECEC))
-            .padding(16.dp),
-        horizontalArrangement = Arrangement.Start
-    ) {
-        IconButton( onClick =  {
-            detailViewModel.cleanPokemonId()
-            navHostController.popBackStack()
-        },
-            modifier = Modifier.padding(top = 16.dp)
-        ){
-            Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = " Back Button ")
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Color(0xFFECECEC))
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.Start
+        ) {
+            IconButton(
+                onClick = {
+                    detailViewModel.cleanPokemonId()
+                    navHostController.popBackStack()
+                },
+                modifier = Modifier.padding(top = 16.dp)
+            ) {
+                Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = " Back Button ")
+            }
         }
+
     }
-}
+
 
 @Composable
 fun PokedexScreen(pokemon: PokemonDto) {
