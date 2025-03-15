@@ -1,7 +1,6 @@
 package com.example.pokedexhacksprint.detail.presentation.ui
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,7 +13,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Icon
@@ -141,27 +139,14 @@ fun PokedexScreen(pokemon: PokemonDto) {
             .background(Color.White)
 
     ) {
-
-        Box(
-            modifier = Modifier
-                .height(250.dp)
-                .fillMaxWidth()
-                .background(Color.White),
-            contentAlignment = Alignment.Center
-        ) {
-            AsyncImage(
+        AsyncImage(
                 model = pokemon.frontFullDefault,
                 contentDescription = "Pokemon Image",
                 modifier = Modifier
-                    .fillMaxSize()
-                    .height(250.dp)
-                    .clip(RoundedCornerShape(16.dp)),
+                    .fillMaxWidth()
+                    .height(250.dp),
                 contentScale = ContentScale.Fit
-            )
-
-
-        }
-
+        )
 
         Row (
             modifier = Modifier

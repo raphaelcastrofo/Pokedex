@@ -37,12 +37,12 @@ fun SearchBar(
             },
             maxLines = 1,
             singleLine = true,
-            textStyle = TextStyle(color = Color.Black),
+            textStyle = TextStyle(color = Color.DarkGray),
             modifier = Modifier
                 .fillMaxWidth()
                 .shadow(5.dp, CircleShape)
                 .background(Color.White, CircleShape)
-                .padding(horizontal = 20.dp, vertical = 12.dp)
+                .padding(horizontal = 16.dp, vertical = 16.dp)
                 .onFocusChanged { focusState ->
                     isHintDisplayed = !focusState.isFocused && text.isEmpty()
                 }
