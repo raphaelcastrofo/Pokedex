@@ -17,12 +17,14 @@ class PokemonRepository(
         try {
             val response = apiService.getPokemonList()
             if (response.isSuccessful) {
+
+
                 val pokemonList = response.body()?.results?.map { pokemonDto ->
                     PokemonEntity(
                         id = pokemonDto.id,
                         name = pokemonDto.name,
-                        weight = pokemonDto.weight,
-                        height = pokemonDto.height,
+                        weight = pokemonDto.weight.toDouble() / 10.0,  // Convertendo para kg
+                        height = pokemonDto.height.toDouble() / 10.0,  // Convertendo para metros
                         types = pokemonDto.types.joinToString { it.type.name },
                         stats = pokemonDto.stats.joinToString { "${it.stat.name}:${it.base_stat}" },
                         frontDefault = pokemonDto.frontFullDefault

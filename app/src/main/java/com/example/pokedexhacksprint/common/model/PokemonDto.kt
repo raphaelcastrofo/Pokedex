@@ -8,6 +8,8 @@ import com.example.pokedexhacksprint.common.data.PokemonEntity
 import kotlinx.coroutines.flow.Flow
 
 data class PokemonDto(
+
+
     val id: Int,
     val name: String,
     val url: String?,
@@ -17,10 +19,13 @@ data class PokemonDto(
     val stats: List<StatSlot>,
     val sprites: Sprites
 
-)  {
-
+) {
     val frontFullDefault: String
-        get() = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${getPokemonIdFromUrl(url)}.png"
+        get() = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${
+            getPokemonIdFromUrl(
+                url
+            )
+        }.png"
 
 
     private fun getPokemonIdFromUrl(url: String?): Int {
@@ -36,6 +41,7 @@ data class PokemonDto(
     data class Sprites(val front_default: String)
 }
 
+
 /*@Dao
 interface PokemonDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -50,6 +56,9 @@ interface PokemonDao {
 interface PokemonDao {
     @Query("SELECT * FROM pokemon_table ORDER BY id ASC")
     fun getPokemonList(): Flow<List<PokemonEntity>>
+
+    @Query("DELETE FROM pokemon_table")
+    suspend fun clearPokemonTable()
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(pokemonList: List<PokemonEntity>)

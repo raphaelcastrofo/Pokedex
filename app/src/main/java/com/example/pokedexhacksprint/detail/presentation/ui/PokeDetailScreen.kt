@@ -162,7 +162,7 @@ fun PokedexScreen(pokemon: PokemonDto) {
             }
         }
 
-        PokemonInfo(pokemon.weight, pokemon.height)
+        PokemonInfo(pokemon.weight/ 10, pokemon.height / 10)
 
         Spacer(modifier = Modifier
             .height(24.dp))
