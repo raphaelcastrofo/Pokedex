@@ -17,6 +17,18 @@ data class PokemonEntity(
 
 
 )
+fun PokemonDto.toPokemonEntity(): PokemonEntity {
+    return PokemonEntity(
+        id = id,
+        name = name,
+        height = height.toDouble() / 10.0,
+        weight = weight.toDouble() / 10.0,
+        types = types.joinToString { it.type.name },
+        stats = stats.joinToString { "${it.stat.name}: ${it.base_stat}" },
+        frontDefault = frontFullDefault
+    )
+}
+
 
 
 

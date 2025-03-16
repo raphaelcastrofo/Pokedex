@@ -162,7 +162,8 @@ fun PokedexScreen(pokemon: PokemonDto) {
             }
         }
 
-        PokemonInfo(pokemon.weight/ 10, pokemon.height / 10)
+        PokemonInfo(pokemon.weight.toDouble()/ 10.0, pokemon.height.toDouble()/ 10.0)
+
 
         Spacer(modifier = Modifier
             .height(24.dp))
@@ -238,7 +239,7 @@ fun StatBar(label: String, value: Int, statName: String) {
 }
 
 @Composable
-fun PokemonInfo(weight: Int, height: Int) {
+fun PokemonInfo(weight: Double, height: Double)  {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -251,12 +252,12 @@ fun PokemonInfo(weight: Int, height: Int) {
             horizontalArrangement = Arrangement.SpaceEvenly,
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text(text = "Weight: ${weight} KG",
+            Text(text = "Weight: ${String.format("%.1f", weight)} KG",
                 color = Color.DarkGray,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold
             )
-            Text(text = "Height: ${height} M",
+            Text(text = "Height: ${String.format("%.1f", height)} M",
                 color = Color.DarkGray,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold

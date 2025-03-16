@@ -3,6 +3,7 @@ package com.example.pokedexhacksprint.common.data
 
 import android.util.Log
 import com.example.pokedexapp.PokemonDao
+import com.example.pokedexapp.PokemonDto
 import kotlinx.coroutines.flow.Flow
 
 class PokemonRepository(
@@ -23,8 +24,8 @@ class PokemonRepository(
                     PokemonEntity(
                         id = pokemonDto.id,
                         name = pokemonDto.name,
-                        weight = pokemonDto.weight.toDouble() / 10.0,  // Convertendo para kg
-                        height = pokemonDto.height.toDouble() / 10.0,  // Convertendo para metros
+                        weight = pokemonDto.weight.toDouble() / 10.0,
+                        height = pokemonDto.height.toDouble() / 10.0,
                         types = pokemonDto.types.joinToString { it.type.name },
                         stats = pokemonDto.stats.joinToString { "${it.stat.name}:${it.base_stat}" },
                         frontDefault = pokemonDto.frontFullDefault
