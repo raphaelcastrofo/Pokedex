@@ -31,6 +31,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -48,6 +52,8 @@ import coil.compose.AsyncImage
 import com.example.pokedexapp.PokemonDto
 import com.example.pokedexhacksprint.R
 import com.example.pokedexhacksprint.list.presentation.PokeListViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 
 @Composable
@@ -61,12 +67,22 @@ fun PokeListScreen(
     val pokemonFontHollow = FontFamily(Font(R.font.pokemon_hollow))
     val listState = rememberLazyGridState()
 
+    val searchError by viewModel.searchError.collectAsState()
+
+    var searchQuery by remember { mutableStateOf("") }
+
+
+
+    LaunchedEffect(searchQuery) {
+        viewModel.searchPokemon(searchQuery) // Executa a busca
+    }
+
     // Carregar mais pokemons quando scrollar
     LaunchedEffect(listState) {
         snapshotFlow { listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index }
             .collect { lastVisibleItemIndex ->
                 if (lastVisibleItemIndex == uiPokemons.size - 1) {
-                    viewModel.fetchMorePokemons() // chama para carregar mais pokemons
+                    viewModel.fetchPokemons()// chama para carregar mais pokemons
                 }
             }
     }
@@ -75,10 +91,15 @@ fun PokeListScreen(
         pokemonFontSolid = pokemonFontSolid,
         pokemonFontHollow = pokemonFontHollow,
         pokemonDto = uiPokemons,
-        listState = listState
-    ) { itemClicked ->
-        navController.navigate(route = "pokeDetail/${itemClicked.name}")
-    }
+        listState = listState,
+        searchError = searchError,
+        onSearchQueryChanged = { query ->
+            searchQuery = query
+        },
+        onClick = { itemClicked ->
+            navController.navigate(route = "pokeDetail/${itemClicked.name}")
+        }
+    )
 }
 
 
@@ -88,6 +109,8 @@ private fun PokemonListContent(
     pokemonFontHollow: FontFamily,
     pokemonDto: List<PokemonDto>,
     listState: LazyGridState,
+    searchError: String?,
+    onSearchQueryChanged: (String) -> Unit,
     onClick: (PokemonDto) -> Unit
 ) {
     Column(
@@ -104,22 +127,16 @@ private fun PokemonListContent(
                 .height(160.dp)
         ) {
             Text(
-                    text = "Pokedéx",
-            fontFamily = pokemonFontSolid,
-            style = MaterialTheme.typography.headlineMedium.copy(
-                fontWeight = FontWeight.ExtraBold,
-                fontSize = 64.sp,
-                color = Color(0xFFFFCB05) // Cor amarela
-
-
-            ),
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-
-
+                text = "Pokedéx",
+                fontFamily = pokemonFontSolid,
+                style = MaterialTheme.typography.headlineMedium.copy(
+                    fontWeight = FontWeight.ExtraBold,
+                    fontSize = 64.sp,
+                    color = Color(0xFFFFCB05) // Cor amarela
+                ),
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
             )
-
-
             Text(
                 text = "Pokedéx",
                 fontFamily = pokemonFontHollow,
@@ -138,30 +155,40 @@ private fun PokemonListContent(
 
         SearchBar(
             hint = "Search",
-
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp)
 
         ) { query ->
-
+            onSearchQueryChanged(query)
         }
 
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(2),
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color(0xFFFFFFFF)),
-            contentPadding = PaddingValues(8.dp),
-            state = listState
-        ) {
-            items(pokemonDto) { pokemonDto ->
-                PokemonItem(
-                    pokemonDto = pokemonDto,
-                    onClick = onClick
-                )
+        // Exibindo erro de busca
+        if (!searchError.isNullOrEmpty()){
+            Text(
+                text = searchError,
+                color = MaterialTheme.colorScheme.error,
+                modifier = Modifier.padding(16.dp)
+            )
+        }
+
+
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(2),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color(0xFFFFFFFF)),
+                contentPadding = PaddingValues(8.dp),
+                state = listState
+            ) {
+                items(pokemonDto) { pokemonDto ->
+                    PokemonItem(
+                        pokemonDto = pokemonDto,
+                        onClick = onClick
+                    )
+                }
             }
-        }
+
     }
 }
 
@@ -192,8 +219,8 @@ fun PokemonItem(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-        AsyncImage(
-            model = pokemonDto.frontFullDefault,
+            AsyncImage(
+                model = pokemonDto.frontFullDefault,
                 modifier = Modifier
                     .padding(bottom = 8.dp)
                     .width(120.dp)

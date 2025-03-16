@@ -13,9 +13,12 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import android.content.Context
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import com.example.pokedexhacksprint.common.data.PokemonEntity
 import com.example.pokedexhacksprint.common.data.PokemonRepository
 import com.example.pokedexhacksprint.common.data.NetworkUtils
+import kotlinx.coroutines.delay
 
 
 class PokeListViewModel (
@@ -26,21 +29,36 @@ class PokeListViewModel (
     val uiPokemons: StateFlow<List<PokemonDto>> = _UiPokemons
     private var currentOffset = 0 // para controlar o deslocamento dos pokemons
 
+    private val _UiAllPokemons = MutableStateFlow<List<PokemonDto>>(emptyList())
+    val uiAllPokemons: StateFlow<List<PokemonDto>> = _UiAllPokemons
+
+    private val _searchError = MutableStateFlow<String?>(null)
+    val searchError: StateFlow<String?> = _searchError
+
+    private var isSearching = false
+
     init {
         fetchPokemons()
     }
 
     // Funcao que carrega pokemons com limite e deslocamento
-    fun fetchPokemons(){
-        viewModelScope.launch (Dispatchers.IO){
+    fun fetchPokemons() {
+        viewModelScope.launch(Dispatchers.IO) {
             val response = listService.getPokemons(limit = 20, offset = currentOffset)
 
-            if (response.isSuccessful){
+            if (response.isSuccessful) {
                 val pokemons = response.body()?.results
 
-                if (pokemons != null){
-                    _UiPokemons.value = _UiPokemons.value + pokemons
-                    currentOffset += 20 // Atualiza o offset para carregar os proximos pokemons
+                if (pokemons != null) {
+                    // Atualiza a lista completa com os novos pokémons
+                    _UiAllPokemons.value = _UiAllPokemons.value + pokemons
+
+                    // No início ou quando a busca está vazia, mostra todos os pokémons
+                    if (!isSearching) {
+                        _UiPokemons.value = _UiAllPokemons.value
+                    }
+
+                    currentOffset += 20
                 }
             } else {
                 Log.d("PokeListViewModel", "Request Error :: ${response.errorBody()}")
@@ -48,9 +66,33 @@ class PokeListViewModel (
         }
     }
 
-    fun fetchMorePokemons(){
-        fetchPokemons()
+
+    fun searchPokemon(query: String) {
+        if (query.isEmpty()) {
+            // Se a pesquisa estiver vazia, mostramos todos os pokémons novamente
+            _UiPokemons.value = _UiAllPokemons.value
+            _searchError.value = null
+            isSearching = false
+        } else {
+
+            isSearching = true
+            // Filtra a lista de pokémons pela query digitada
+            val filteredPokemons = _UiAllPokemons.value.filter {
+                it.name.contains(query, ignoreCase = true)
+            }
+
+            if (filteredPokemons.isNotEmpty()) {
+                // Atualiza com os pokémons filtrados
+                _UiPokemons.value = filteredPokemons
+                _searchError.value = null
+            } else {
+                // Se não houver nenhum pokémon correspondente, exibe uma mensagem de erro
+                _UiPokemons.value = emptyList()
+                _searchError.value = "Nenhum Pokémon encontrado"
+            }
+        }
     }
+
 
 
     companion object {
