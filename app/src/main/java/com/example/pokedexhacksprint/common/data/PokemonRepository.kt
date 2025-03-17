@@ -1,14 +1,16 @@
 package com.example.pokedexhacksprint.common.data
 
 
+import android.content.Context
 import android.util.Log
 import com.example.pokedexapp.PokemonDao
-import com.example.pokedexapp.PokemonDto
 import kotlinx.coroutines.flow.Flow
+
 
 class PokemonRepository(
     private val apiService: PokedexApi,
-    private val pokemonDao: PokemonDao
+    private val pokemonDao: PokemonDao,
+    private val context: Context
 ) {
     // Repositório local de pokémons
     val pokemons: Flow<List<PokemonEntity>> = pokemonDao.getPokemonList()
@@ -33,11 +35,14 @@ class PokemonRepository(
                 } ?: emptyList()
 
                 pokemonDao.insertAll(pokemonList) // Salva no banco local
+
             } else {
                 Log.e("PokemonRepository", "Erro na resposta da API: ${response.message()}")
+
             }
         } catch (e: Exception) {
             Log.e("PokemonRepository", "Erro ao buscar dados da API", e)
         }
     }
 }
+

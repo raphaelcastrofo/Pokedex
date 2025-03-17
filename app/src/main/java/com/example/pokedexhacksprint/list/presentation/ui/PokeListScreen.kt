@@ -51,6 +51,8 @@ import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.example.pokedexapp.PokemonDto
 import com.example.pokedexhacksprint.R
+import com.example.pokedexhacksprint.common.data.PokemonListUiState
+import com.example.pokedexhacksprint.common.data.PokemonUiData
 import com.example.pokedexhacksprint.list.presentation.PokeListViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -71,22 +73,6 @@ fun PokeListScreen(
 
     var searchQuery by remember { mutableStateOf("") }
 
-
-
-    LaunchedEffect(searchQuery) {
-        viewModel.searchPokemon(searchQuery) // Executa a busca
-    }
-
-    // Carregar mais pokemons quando scrollar
-    LaunchedEffect(listState) {
-        snapshotFlow { listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index }
-            .collect { lastVisibleItemIndex ->
-                if (lastVisibleItemIndex == uiPokemons.size - 1) {
-                    viewModel.fetchPokemons()// chama para carregar mais pokemons
-                }
-            }
-    }
-
     PokemonListContent(
         pokemonFontSolid = pokemonFontSolid,
         pokemonFontHollow = pokemonFontHollow,
@@ -100,18 +86,38 @@ fun PokeListScreen(
             navController.navigate(route = "pokeDetail/${itemClicked.name}")
         }
     )
-}
 
+    LaunchedEffect(searchQuery) {
+        viewModel.searchPokemon(searchQuery) // Executa a busca
+    }
+
+
+    // Carregar mais pokemons quando scrollar
+    LaunchedEffect(listState) {
+        snapshotFlow { listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index }
+            .collect { lastVisibleItemIndex ->
+                val pokemonList = uiPokemons.list
+                if (pokemonList.isNotEmpty() && lastVisibleItemIndex == pokemonList.size - 1) {
+                    viewModel.fetchPokemons() // Carregar mais Pokémon
+                }
+            }
+    }
+
+
+}
 
 @Composable
 private fun PokemonListContent(
     pokemonFontSolid: FontFamily,
     pokemonFontHollow: FontFamily,
-    pokemonDto: List<PokemonDto>,
+    pokemonDto: PokemonListUiState,
     listState: LazyGridState,
     searchError: String?,
     onSearchQueryChanged: (String) -> Unit,
-    onClick: (PokemonDto) -> Unit
+    onClick: (PokemonUiData) -> Unit
+
+
+
 ) {
     Column(
         modifier = Modifier
@@ -172,36 +178,33 @@ private fun PokemonListContent(
             )
         }
 
-
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(2),
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color(0xFFFFFFFF)),
-                contentPadding = PaddingValues(8.dp),
-                state = listState
-            ) {
-                items(pokemonDto) { pokemonDto ->
-                    PokemonItem(
-                        pokemonDto = pokemonDto,
-                        onClick = onClick
-                    )
-                }
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(2),
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color(0xFFFFFFFF)),
+            contentPadding = PaddingValues(8.dp),
+            state = listState
+        ) {
+            items(pokemonDto.list) { pokemonUiData -> // Alterado para pokemonUiData
+                PokemonItem(
+                    pokemonUiData = pokemonUiData, // Alterado para pokemonUiData
+                    onClick = onClick
+                )
             }
-
+        }
     }
 }
 
 @Composable
 fun PokemonItem(
-    pokemonDto: PokemonDto,
-    onClick: (PokemonDto) -> Unit,
+    pokemonUiData: PokemonUiData, // Alterado para PokemonUiData
+    onClick: (PokemonUiData) -> Unit // Alterado para PokemonUiData
 ) {
-
     Card(
         modifier = Modifier
             .padding(8.dp)
-            .clickable { onClick.invoke(pokemonDto) }
+            .clickable { onClick.invoke(pokemonUiData) }
             .fillMaxWidth(),
         elevation = CardDefaults.cardElevation(4.dp),
         shape = RoundedCornerShape(
@@ -218,18 +221,17 @@ fun PokemonItem(
                 .padding(8.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
             AsyncImage(
-                model = pokemonDto.frontFullDefault,
+                model = pokemonUiData.sprites.front_default ?: "", // Corrigido aqui
                 modifier = Modifier
                     .padding(bottom = 8.dp)
                     .width(120.dp)
                     .height(120.dp),
                 contentScale = ContentScale.Crop,
-                contentDescription = "${pokemonDto.name} Poster image"
+                contentDescription = "${pokemonUiData.name} Poster image"
             )
             Text(
-                text = pokemonDto.name.replaceFirstChar { it.uppercase() }, // Deixa a primeira letra do nome maiscula
+                text = pokemonUiData.name.replaceFirstChar { it.uppercase() }, // Deixa a primeira letra do nome maiúscula
                 fontSize = 18.sp,
                 fontWeight = FontWeight.SemiBold,
                 color = Color.DarkGray
@@ -237,5 +239,4 @@ fun PokemonItem(
         }
     }
 }
-
 

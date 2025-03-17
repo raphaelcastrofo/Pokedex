@@ -7,5 +7,8 @@ data class PokeResponse(
     val next: String?,
     val previous: String?,
     val results: List<PokemonDto>,
+
 )
+
+
 

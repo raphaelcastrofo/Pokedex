@@ -6,10 +6,9 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.example.pokedexhacksprint.common.data.PokemonEntity
 import kotlinx.coroutines.flow.Flow
+import java.net.Proxy
 
 data class PokemonDto(
-
-
     val id: Int,
     val name: String,
     val url: String?,
@@ -32,7 +31,7 @@ data class PokemonDto(
         return url?.split("pokemon/")?.getOrNull(1)?.split("/")?.getOrNull(0)?.toIntOrNull() ?: id
     }
 
-    data class TypeSlot(val type: PokemonType)
+    data class TypeSlot(val type: Proxy.Type)
     data class PokemonType(val name: String)
 
     data class StatSlot(val base_stat: Int, val stat: Stat)
@@ -41,15 +40,6 @@ data class PokemonDto(
     data class Sprites(val front_default: String)
 }
 
-
-/*@Dao
-interface PokemonDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAll(pokemonList: List<PokemonEntity>)
-
-    @Query("SELECT * FROM pokemon_table")
-    suspend fun getAllPokemon(): List<PokemonEntity>
-}*/
 
 
 @Dao
@@ -62,5 +52,17 @@ interface PokemonDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(pokemonList: List<PokemonEntity>)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertPokemon(pokemon: PokemonEntity)
+
+    @Query("SELECT * FROM pokemon_table")
+    suspend fun getAllPokemons(): List<PokemonEntity>
+
+    @Query("SELECT * FROM pokemon_table WHERE name LIKE :query")
+    suspend fun searchPokemons(query: String): List<PokemonEntity>
 }
+
+
+
 

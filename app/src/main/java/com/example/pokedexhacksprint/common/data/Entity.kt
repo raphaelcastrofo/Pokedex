@@ -3,6 +3,8 @@ package com.example.pokedexhacksprint.common.data
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.example.pokedexapp.PokemonDto
+import java.lang.reflect.Type
+import java.net.Proxy
 
 @Entity(tableName = "pokemon_table")
 data class PokemonEntity(
@@ -28,6 +30,9 @@ fun PokemonDto.toPokemonEntity(): PokemonEntity {
         frontDefault = frontFullDefault
     )
 }
+
+
+
 
 
 

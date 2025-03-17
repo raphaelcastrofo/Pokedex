@@ -5,10 +5,11 @@ import androidx.room.RoomDatabase
 import com.example.pokedexapp.PokemonDao
 import com.example.pokedexhacksprint.common.data.PokemonEntity
 
+
 @Database(entities = [PokemonEntity::class], version = 1, exportSchema = false)
 abstract class PokemonDatabase : RoomDatabase() {
-    abstract fun pokemonDao(): PokemonDao
 
+    abstract fun pokemonDao(): PokemonDao
 
     companion object {
         @Volatile
@@ -25,10 +26,8 @@ abstract class PokemonDatabase : RoomDatabase() {
                 instance
             }
         }
-
-
     }
-
-
-
 }
+
+
+
