@@ -1,36 +1,31 @@
 package com.example.pokedexhacksprint.list.presentation
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
-import com.example.pokedexapp.PokemonDto
 import com.example.pokedexhacksprint.common.data.RetrofitClient
+import com.example.pokedexhacksprint.detail.data.PokemonListRepository
 import com.example.pokedexhacksprint.list.data.ListService
+import com.example.pokedexhacksprint.list.presentation.ui.PokemonListUiState
+import com.example.pokedexhacksprint.list.presentation.ui.PokemonUiData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import android.content.Context
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
-import com.example.pokedexhacksprint.common.data.PokemonEntity
-import com.example.pokedexhacksprint.common.data.PokemonRepository
-import com.example.pokedexhacksprint.common.data.NetworkUtils
-import kotlinx.coroutines.delay
 
 
-class PokeListViewModel (
-    private val listService: ListService
-): ViewModel() {
+class PokeListViewModel(
+    private val repository: PokemonListRepository
+) : ViewModel() {
 
-    private val _UiPokemons = MutableStateFlow<List<PokemonDto>>(emptyList())
-    val uiPokemons: StateFlow<List<PokemonDto>> = _UiPokemons
+
+    private val _UiPokemons = MutableStateFlow<PokemonListUiState>(PokemonListUiState())
+    val uiPokemons: StateFlow<PokemonListUiState> = _UiPokemons
     private var currentOffset = 0
 
-    private val _UiAllPokemons = MutableStateFlow<List<PokemonDto>>(emptyList())
-    val uiAllPokemons: StateFlow<List<PokemonDto>> = _UiAllPokemons
+    private val _UiAllPokemons = MutableStateFlow<PokemonListUiState>(PokemonListUiState())
+    val uiAllPokemons: StateFlow<PokemonListUiState> = _UiAllPokemons
 
     private val _searchError = MutableStateFlow<String?>(null)
     val searchError: StateFlow<String?> = _searchError
@@ -41,27 +36,32 @@ class PokeListViewModel (
         fetchPokemons()
     }
 
-
     fun fetchPokemons() {
         viewModelScope.launch(Dispatchers.IO) {
-            val response = listService.getPokemons(limit = 20, offset = currentOffset)
-
-            if (response.isSuccessful) {
-                val pokemons = response.body()?.results
-
+            val result = repository.getNowPokemon()
+            if (result.isSuccess) {
+                val pokemons = result.getOrNull()?.results
                 if (pokemons != null) {
+                    val pokemonUiDataList = pokemons.map { PokemonDto ->
 
-                    _UiAllPokemons.value = _UiAllPokemons.value + pokemons
-
-
-                    if (!isSearching) {
-                        _UiPokemons.value = _UiAllPokemons.value
+                        PokemonUiData(
+                            id = PokemonDto.id,
+                            name = PokemonDto.name,
+                            url = PokemonDto.url,
+                            height = PokemonDto.height,
+                            weight = PokemonDto.weight,
+                            types = PokemonDto.types,
+                            stats = PokemonDto.stats,
+                            sprites = PokemonDto.sprites,
+                        )
                     }
-
-                    currentOffset += 20
+                    _UiPokemons.value = PokemonListUiState(list = pokemonUiDataList)
+                    if (!isSearching) {
+                        currentOffset += 20
+                    } else {
+                        _UiPokemons.value = PokemonListUiState(list = pokemonUiDataList)
+                    }
                 }
-            } else {
-                Log.d("PokeListViewModel", "Request Error :: ${response.errorBody()}")
             }
         }
     }
@@ -70,43 +70,44 @@ class PokeListViewModel (
     fun searchPokemon(query: String) {
         if (query.isEmpty()) {
 
-            _UiPokemons.value = _UiAllPokemons.value
+            _UiPokemons.value = _UiPokemons.value
             _searchError.value = null
             isSearching = false
         } else {
 
             isSearching = true
 
-            val filteredPokemons = _UiAllPokemons.value.filter {
+            val filteredPokemons = _UiAllPokemons.value.list.filter {
                 it.name.contains(query, ignoreCase = true)
             }
 
             if (filteredPokemons.isNotEmpty()) {
 
-                _UiPokemons.value = filteredPokemons
+                _UiPokemons.value = PokemonListUiState(isLoading = true)
                 _searchError.value = null
             } else {
 
-                _UiPokemons.value = emptyList()
+
                 _searchError.value = "Nenhum Pokémon encontrado"
             }
         }
     }
 
 
-
     companion object {
-        val Factory : ViewModelProvider.Factory = object : ViewModelProvider.Factory {
+        val Factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel> create(modelClass: Class<T>, extras: CreationExtras): T {
                 val listService = RetrofitClient.retrofitInstance.create(ListService::class.java)
+                val repository = PokemonListRepository(listService)
                 return PokeListViewModel(
-                    listService
-                ) as T
+                    repository = PokemonListRepository(listService)
+                )as T
             }
         }
     }
 }
+
 
 
 

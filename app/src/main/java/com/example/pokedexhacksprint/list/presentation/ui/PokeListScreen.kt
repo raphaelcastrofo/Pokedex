@@ -66,9 +66,7 @@ fun PokeListScreen(
     val pokemonFontSolid = FontFamily(Font(R.font.pokemon_solid))
     val pokemonFontHollow = FontFamily(Font(R.font.pokemon_hollow))
     val listState = rememberLazyGridState()
-
     val searchError by viewModel.searchError.collectAsState()
-
     var searchQuery by remember { mutableStateOf("") }
 
 
@@ -81,7 +79,7 @@ fun PokeListScreen(
     LaunchedEffect(listState) {
         snapshotFlow { listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index }
             .collect { lastVisibleItemIndex ->
-                if (lastVisibleItemIndex == uiPokemons.size - 1) {
+                if (lastVisibleItemIndex == uiPokemons.list.size - 1) {
                     viewModel.fetchPokemons()
                 }
             }
@@ -107,11 +105,11 @@ fun PokeListScreen(
 private fun PokemonListContent(
     pokemonFontSolid: FontFamily,
     pokemonFontHollow: FontFamily,
-    pokemonDto: List<PokemonDto>,
+    pokemonDto: PokemonListUiState,
     listState: LazyGridState,
     searchError: String?,
     onSearchQueryChanged: (String) -> Unit,
-    onClick: (PokemonDto) -> Unit
+    onClick: (PokemonUiData) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -181,9 +179,10 @@ private fun PokemonListContent(
                 contentPadding = PaddingValues(8.dp),
                 state = listState
             ) {
-                items(pokemonDto) { pokemonDto ->
+
+                items(pokemonDto.list) { pokemonUiData ->  // Iterando sobre a lista dentro de pokemonDto
                     PokemonItem(
-                        pokemonDto = pokemonDto,
+                        pokemonDto = pokemonUiData,
                         onClick = onClick
                     )
                 }
@@ -192,10 +191,11 @@ private fun PokemonListContent(
     }
 }
 
+
 @Composable
 fun PokemonItem(
-    pokemonDto: PokemonDto,
-    onClick: (PokemonDto) -> Unit,
+    pokemonDto: PokemonUiData,
+    onClick: (PokemonUiData) -> Unit,
 ) {
 
     Card(
@@ -226,7 +226,7 @@ fun PokemonItem(
                     .width(120.dp)
                     .height(120.dp),
                 contentScale = ContentScale.Crop,
-                contentDescription = "${pokemonDto.name} Poster image"
+                contentDescription = "${pokemonDto.name} official artwork"
             )
             Text(
                 text = pokemonDto.name.replaceFirstChar { it.uppercase() },
@@ -237,5 +237,7 @@ fun PokemonItem(
         }
     }
 }
+
+
 
 

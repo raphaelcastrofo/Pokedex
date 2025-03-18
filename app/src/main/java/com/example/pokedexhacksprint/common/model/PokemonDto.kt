@@ -42,15 +42,5 @@ data class PokemonDto(
 }
 
 
-@Dao
-interface PokemonDao {
-    @Query("SELECT * FROM pokemon_table ORDER BY id ASC")
-    fun getPokemonList(): Flow<List<PokemonEntity>>
 
-    @Query("DELETE FROM pokemon_table")
-    suspend fun clearPokemonTable()
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAll(pokemonList: List<PokemonEntity>)
-}
 
