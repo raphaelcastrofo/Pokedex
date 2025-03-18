@@ -13,8 +13,8 @@ interface ListService {
 
     @GET("pokemon")
     suspend fun getPokemons(
-        @Query("limit") limit: Int = 20, // limita a quantida de pokemons a 20
-        @Query("offset") offset: Int = 0, // Offset para buscar pokemons a partir de uma posicao especifica
+        @Query("limit") limit: Int = 20,
+        @Query("offset") offset: Int = 0,
     ) : Response<PokeResponse>
 
     @GET("pokemon/{name}")

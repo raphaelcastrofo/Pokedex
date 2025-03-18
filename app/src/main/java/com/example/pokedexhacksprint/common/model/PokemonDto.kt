@@ -42,16 +42,6 @@ data class PokemonDto(
 }
 
 
-/*@Dao
-interface PokemonDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAll(pokemonList: List<PokemonEntity>)
-
-    @Query("SELECT * FROM pokemon_table")
-    suspend fun getAllPokemon(): List<PokemonEntity>
-}*/
-
-
 @Dao
 interface PokemonDao {
     @Query("SELECT * FROM pokemon_table ORDER BY id ASC")

@@ -33,7 +33,7 @@ fun SearchBar(
             value = text,
             onValueChange = {
                 text = it
-                onSearch(it)  // Chamando a função onSearch quando o texto muda
+                onSearch(it)
             },
             maxLines = 1,
             singleLine = true,

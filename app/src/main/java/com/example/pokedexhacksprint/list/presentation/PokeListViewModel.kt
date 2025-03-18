@@ -27,7 +27,7 @@ class PokeListViewModel (
 
     private val _UiPokemons = MutableStateFlow<List<PokemonDto>>(emptyList())
     val uiPokemons: StateFlow<List<PokemonDto>> = _UiPokemons
-    private var currentOffset = 0 // para controlar o deslocamento dos pokemons
+    private var currentOffset = 0
 
     private val _UiAllPokemons = MutableStateFlow<List<PokemonDto>>(emptyList())
     val uiAllPokemons: StateFlow<List<PokemonDto>> = _UiAllPokemons
@@ -41,7 +41,7 @@ class PokeListViewModel (
         fetchPokemons()
     }
 
-    // Funcao que carrega pokemons com limite e deslocamento
+
     fun fetchPokemons() {
         viewModelScope.launch(Dispatchers.IO) {
             val response = listService.getPokemons(limit = 20, offset = currentOffset)
@@ -50,10 +50,10 @@ class PokeListViewModel (
                 val pokemons = response.body()?.results
 
                 if (pokemons != null) {
-                    // Atualiza a lista completa com os novos pokémons
+
                     _UiAllPokemons.value = _UiAllPokemons.value + pokemons
 
-                    // No início ou quando a busca está vazia, mostra todos os pokémons
+
                     if (!isSearching) {
                         _UiPokemons.value = _UiAllPokemons.value
                     }
@@ -69,24 +69,24 @@ class PokeListViewModel (
 
     fun searchPokemon(query: String) {
         if (query.isEmpty()) {
-            // Se a pesquisa estiver vazia, mostramos todos os pokémons novamente
+
             _UiPokemons.value = _UiAllPokemons.value
             _searchError.value = null
             isSearching = false
         } else {
 
             isSearching = true
-            // Filtra a lista de pokémons pela query digitada
+
             val filteredPokemons = _UiAllPokemons.value.filter {
                 it.name.contains(query, ignoreCase = true)
             }
 
             if (filteredPokemons.isNotEmpty()) {
-                // Atualiza com os pokémons filtrados
+
                 _UiPokemons.value = filteredPokemons
                 _searchError.value = null
             } else {
-                // Se não houver nenhum pokémon correspondente, exibe uma mensagem de erro
+
                 _UiPokemons.value = emptyList()
                 _searchError.value = "Nenhum Pokémon encontrado"
             }

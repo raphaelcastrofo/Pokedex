@@ -8,10 +8,10 @@ import retrofit2.http.Path
 
 interface PokedexApi {
 
-    @GET("pokemon?limit=151") // Obtendo os primeiros 151 Pokémon (1ª geração)
+    @GET("pokemon?limit=151")
     suspend fun getPokemonList(): Response<PokemonListResponse>
 
-    @GET("pokemon/{name}") // Detalhes de um Pokémon específico
+    @GET("pokemon/{name}")
     suspend fun getPokemonByName(@Path("name") name: String): Response<PokemonDto>
 }
 

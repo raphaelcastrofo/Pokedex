@@ -74,15 +74,15 @@ fun PokeListScreen(
 
 
     LaunchedEffect(searchQuery) {
-        viewModel.searchPokemon(searchQuery) // Executa a busca
+        viewModel.searchPokemon(searchQuery)
     }
 
-    // Carregar mais pokemons quando scrollar
+
     LaunchedEffect(listState) {
         snapshotFlow { listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index }
             .collect { lastVisibleItemIndex ->
                 if (lastVisibleItemIndex == uiPokemons.size - 1) {
-                    viewModel.fetchPokemons()// chama para carregar mais pokemons
+                    viewModel.fetchPokemons()
                 }
             }
     }
@@ -119,7 +119,7 @@ private fun PokemonListContent(
             .background(Color(0xFFBB484B))
     ) {
 
-        // Camada amarela do texto
+
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -127,23 +127,23 @@ private fun PokemonListContent(
                 .height(160.dp)
         ) {
             Text(
-                text = "Pokedéx",
+                text = "Pokédex",
                 fontFamily = pokemonFontSolid,
                 style = MaterialTheme.typography.headlineMedium.copy(
                     fontWeight = FontWeight.ExtraBold,
                     fontSize = 64.sp,
-                    color = Color(0xFFFFCB05) // Cor amarela
+                    color = Color(0xFFFFCB05)
                 ),
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
             )
             Text(
-                text = "Pokedéx",
+                text = "Pokédex",
                 fontFamily = pokemonFontHollow,
                 style = MaterialTheme.typography.headlineMedium.copy(
                     fontWeight = FontWeight.Bold,
                     fontSize = 64.sp,
-                    color = Color(0xFF3466AF) //contorno
+                    color = Color(0xFF3466AF)
                 ),
                 modifier = Modifier
                     .padding(4.dp)
@@ -163,7 +163,7 @@ private fun PokemonListContent(
             onSearchQueryChanged(query)
         }
 
-        // Exibindo erro de busca
+
         if (!searchError.isNullOrEmpty()){
             Text(
                 text = searchError,
@@ -213,7 +213,7 @@ fun PokemonItem(
     ) {
         Column(
             modifier = Modifier
-                .background(Color(0xFFececec)) // Fundo colorido
+                .background(Color(0xFFececec))
                 .fillMaxWidth()
                 .padding(8.dp),
             horizontalAlignment = Alignment.CenterHorizontally
@@ -229,7 +229,7 @@ fun PokemonItem(
                 contentDescription = "${pokemonDto.name} Poster image"
             )
             Text(
-                text = pokemonDto.name.replaceFirstChar { it.uppercase() }, // Deixa a primeira letra do nome maiscula
+                text = pokemonDto.name.replaceFirstChar { it.uppercase() },
                 fontSize = 18.sp,
                 fontWeight = FontWeight.SemiBold,
                 color = Color.DarkGray

@@ -10,10 +10,10 @@ class PokemonRepository(
     private val apiService: PokedexApi,
     private val pokemonDao: PokemonDao
 ) {
-    // Repositório local de pokémons
+
     val pokemons: Flow<List<PokemonEntity>> = pokemonDao.getPokemonList()
 
-    // Função para buscar os dados da API
+
     suspend fun fetchPokemons() {
         try {
             val response = apiService.getPokemonList()
@@ -32,7 +32,7 @@ class PokemonRepository(
                     )
                 } ?: emptyList()
 
-                pokemonDao.insertAll(pokemonList) // Salva no banco local
+                pokemonDao.insertAll(pokemonList)
             } else {
                 Log.e("PokemonRepository", "Erro na resposta da API: ${response.message()}")
             }

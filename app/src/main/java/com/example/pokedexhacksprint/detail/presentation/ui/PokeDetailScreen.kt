@@ -93,11 +93,11 @@ fun TopBar(pokemon: PokemonDto,
                 fontWeight = FontWeight.ExtraBold,
                 color = Color(0xFFECECEC),
                 modifier = Modifier
-                    .fillMaxWidth()  // O texto vai ocupar toda a largura da Box
-                    .fillMaxHeight()  // A altura da Box será 100% ocupada pelo texto
-                    .align(Alignment.Center), // Centraliza o texto verticalmente sem deixar espaço
-                maxLines = 1, // Garante que o texto não quebre em múltiplas linhas
-                overflow = TextOverflow.Clip  // Corta o texto sem mostrar "..."
+                    .fillMaxWidth()
+                    .fillMaxHeight()
+                    .align(Alignment.Center),
+                maxLines = 1,
+                overflow = TextOverflow.Clip
             )
             Column(
                 modifier = Modifier
@@ -196,12 +196,12 @@ fun TypeBadge(type: String, color: Color) {
 }
 
 val statColorMap = mapOf(
-    "hp" to Color(0xFFFC4C4C), // Vermelho para HP
-    "attack" to Color(0xFF4C91FC), // Azul para Ataque
-    "defense" to Color(0xFF8BC34A), // Verde para Defesa
-    "special-attack" to Color(0xFFFFC107), // Amarelo para Ataque Especial
-    "special-defense" to Color(0xFF9C27B0), // Roxo para Defesa Especial
-    "speed" to Color(0xFF00BCD4) // Ciano para Velocidade
+    "hp" to Color(0xFFFC4C4C),
+    "attack" to Color(0xFF4C91FC),
+    "defense" to Color(0xFF8BC34A),
+    "special-attack" to Color(0xFFFFC107),
+    "special-defense" to Color(0xFF9C27B0),
+    "speed" to Color(0xFF00BCD4)
 )
 
 @Composable
