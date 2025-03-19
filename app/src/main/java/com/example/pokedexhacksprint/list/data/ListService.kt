@@ -1,13 +1,12 @@
 package com.example.pokedexhacksprint.list.data
 
-import com.example.pokedexapp.PokemonDto
+
+import com.example.pokedexhacksprint.common.model.PokemonDto
 import com.example.pokedexhacksprint.common.model.PokeResponse
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
-import retrofit2.http.QueryName
-import retrofit2.http.Url
 
 interface ListService {
 

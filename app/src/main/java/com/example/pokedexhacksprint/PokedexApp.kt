@@ -1,5 +1,6 @@
 package com.example.pokedexhacksprint
 
+
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.Composable
