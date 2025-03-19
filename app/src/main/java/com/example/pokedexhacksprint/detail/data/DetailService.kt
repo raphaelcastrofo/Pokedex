@@ -1,6 +1,7 @@
 package com.example.pokedexhacksprint.detail.data
 
-import com.example.pokedexapp.PokemonDto
+
+import com.example.pokedexhacksprint.common.model.PokemonDto
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path

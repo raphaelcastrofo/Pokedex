@@ -34,7 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
-import com.example.pokedexapp.PokemonDto
+import com.example.pokedexhacksprint.common.model.PokemonDto
 import com.example.pokedexhacksprint.detail.presentation.PokeDetailViewModel
 import com.example.pokedexhacksprint.ui.theme.getTypeColor
 
@@ -67,20 +67,20 @@ fun TopBar(pokemon: PokemonDto,
 
 
     Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(Color.White),
-            verticalArrangement = Arrangement.Top
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color.White),
+        verticalArrangement = Arrangement.Top
+    ) {
+        IconButton(
+            onClick = {
+                detailViewModel.cleanPokemonId()
+                navHostController.popBackStack()
+            },
+            modifier = Modifier.padding(top = 24.dp)
         ) {
-            IconButton(
-                onClick = {
-                    detailViewModel.cleanPokemonId()
-                    navHostController.popBackStack()
-                },
-                modifier = Modifier.padding(top = 24.dp)
-            ) {
-                Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = " Back Button ")
-            }
+            Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = " Back Button ")
+        }
 
         Box(modifier = Modifier
             .background(Color.White)
@@ -140,12 +140,12 @@ fun PokedexScreen(pokemon: PokemonDto) {
 
     ) {
         AsyncImage(
-                model = pokemon.frontFullDefault,
-                contentDescription = "Pokemon Image",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(250.dp),
-                contentScale = ContentScale.Fit
+            model = pokemon.frontFullDefault,
+            contentDescription = "Pokemon Image",
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(250.dp),
+            contentScale = ContentScale.Fit
         )
 
         Row (
@@ -218,15 +218,15 @@ fun StatBar(label: String, value: Int, statName: String) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             LinearProgressIndicator(
-            progress = { value / maxValue },
-            modifier = Modifier
-                                .weight(1f)
-                                .height(12.dp)
-                                .clip(RoundedCornerShape(8.dp)),
-            color = color,
-            trackColor = Color.LightGray,
+                progress = { value / maxValue },
+                modifier = Modifier
+                    .weight(1f)
+                    .height(12.dp)
+                    .clip(RoundedCornerShape(8.dp)),
+                color = color,
+                trackColor = Color.LightGray,
 
-            )
+                )
             Spacer(modifier = Modifier.width(8.dp))
             Text(
                 text = "$value / $maxValue",
@@ -265,14 +265,3 @@ fun PokemonInfo(weight: Double, height: Double)  {
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
