@@ -1,15 +1,15 @@
 package com.example.pokedexhacksprint.detail.presentation
 
+
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
-import com.example.pokedexapp.PokemonDto
+import com.example.pokedexhacksprint.common.model.PokemonDto
 import com.example.pokedexhacksprint.common.data.RetrofitClient
 import com.example.pokedexhacksprint.detail.data.DetailService
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -42,7 +42,7 @@ class PokeDetailViewModel(
 
     fun cleanPokemonId() {
 
-            _uiPoke.value = null
+        _uiPoke.value = null
 
     }
     companion object {

@@ -1,8 +1,5 @@
 package com.example.pokedexhacksprint.list.presentation.ui
 
-
-import android.util.Log
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -14,14 +11,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -33,15 +27,12 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -49,11 +40,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
-import com.example.pokedexapp.PokemonDto
 import com.example.pokedexhacksprint.R
 import com.example.pokedexhacksprint.list.presentation.PokeListViewModel
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 
 @Composable
@@ -66,9 +54,7 @@ fun PokeListScreen(
     val pokemonFontSolid = FontFamily(Font(R.font.pokemon_solid))
     val pokemonFontHollow = FontFamily(Font(R.font.pokemon_hollow))
     val listState = rememberLazyGridState()
-
     val searchError by viewModel.searchError.collectAsState()
-
     var searchQuery by remember { mutableStateOf("") }
 
 
@@ -81,8 +67,8 @@ fun PokeListScreen(
     LaunchedEffect(listState) {
         snapshotFlow { listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index }
             .collect { lastVisibleItemIndex ->
-                if (lastVisibleItemIndex == uiPokemons.size - 1) {
-                    viewModel.fetchPokemons()
+                if (lastVisibleItemIndex == uiPokemons.list.size - 1) {
+                    viewModel.syncWithApi()
                 }
             }
     }
@@ -107,11 +93,11 @@ fun PokeListScreen(
 private fun PokemonListContent(
     pokemonFontSolid: FontFamily,
     pokemonFontHollow: FontFamily,
-    pokemonDto: List<PokemonDto>,
+    pokemonDto: PokemonListUiState,
     listState: LazyGridState,
     searchError: String?,
     onSearchQueryChanged: (String) -> Unit,
-    onClick: (PokemonDto) -> Unit
+    onClick: (PokemonUiData) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -173,29 +159,31 @@ private fun PokemonListContent(
         }
 
 
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(2),
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color(0xFFFFFFFF)),
-                contentPadding = PaddingValues(8.dp),
-                state = listState
-            ) {
-                items(pokemonDto) { pokemonDto ->
-                    PokemonItem(
-                        pokemonDto = pokemonDto,
-                        onClick = onClick
-                    )
-                }
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(2),
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color(0xFFFFFFFF)),
+            contentPadding = PaddingValues(8.dp),
+            state = listState
+        ) {
+
+            items(pokemonDto.list) { pokemonUiData ->  // Iterando sobre a lista dentro de pokemonDto
+                PokemonItem(
+                    pokemonDto = pokemonUiData,
+                    onClick = onClick
+                )
             }
+        }
 
     }
 }
 
+
 @Composable
 fun PokemonItem(
-    pokemonDto: PokemonDto,
-    onClick: (PokemonDto) -> Unit,
+    pokemonDto: PokemonUiData,
+    onClick: (PokemonUiData) -> Unit,
 ) {
 
     Card(
@@ -226,7 +214,7 @@ fun PokemonItem(
                     .width(120.dp)
                     .height(120.dp),
                 contentScale = ContentScale.Crop,
-                contentDescription = "${pokemonDto.name} Poster image"
+                contentDescription = "${pokemonDto.name} official artwork"
             )
             Text(
                 text = pokemonDto.name.replaceFirstChar { it.uppercase() },
@@ -237,5 +225,7 @@ fun PokemonItem(
         }
     }
 }
+
+
 
 

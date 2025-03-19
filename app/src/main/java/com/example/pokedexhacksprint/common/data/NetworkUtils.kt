@@ -1,6 +1,7 @@
 package com.example.pokedexhacksprint.common.data
 
 
+
 import android.Manifest
 import android.content.Context
 import android.net.ConnectivityManager
@@ -24,5 +25,6 @@ object NetworkUtils {
         }
     }
 }
+
 
 
